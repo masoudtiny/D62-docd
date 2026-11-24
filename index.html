@@ -17,11 +17,15 @@ html.locked #gate{display:flex}
 #gate button{margin-top:12px;width:100%;font-size:16px;padding:10px;border:0;border-radius:4px;background:#1f6fb5;color:#fff}
 #gate p{color:#c00;font-size:14px;min-height:18px;margin:10px 0 0}</style>
 <script>if(sessionStorage.getItem("d62ok")!=="1"){document.documentElement.className+=" locked";}</script>
+<style>#rot{display:none;position:fixed;left:0;right:0;bottom:0;z-index:5000;background:#1f6fb5;color:#fff;font:15px Arial,sans-serif;padding:10px 14px;text-align:center}
+#rot b{margin-left:12px;padding:2px 8px;border:1px solid #fff;border-radius:3px;cursor:pointer}
+@media (orientation:portrait) and (max-width:900px){#rot{display:block}}</style>
 </head>
 <body>
 <div id="gate"><form id="gateForm"><h2>D62</h2><input type="password" id="gatePw" placeholder="Password" autocomplete="current-password" autofocus><button type="submit">Enter</button><p id="gateMsg"></p></form></div>
 <script>
 (function(){
+function goLandscape(){try{if(window.matchMedia("(max-width:900px)").matches){var de=document.documentElement,rf=de.requestFullscreen||de.webkitRequestFullscreen;var p=rf?rf.call(de):null;Promise.resolve(p).then(function(){return screen.orientation&&screen.orientation.lock?screen.orientation.lock("landscape"):null}).catch(function(){});}}catch(e){}}
 var H="88b41a8bfee9702df832c8cca1d5319a247ed42f2631b6eb1e064dfb7afa1c94";
 function hex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return("0"+x.toString(16)).slice(-2)}).join("")}
 document.getElementById("gateForm").addEventListener("submit",function(e){
@@ -29,7 +33,7 @@ document.getElementById("gateForm").addEventListener("submit",function(e){
  var msg=document.getElementById("gateMsg"),pw=document.getElementById("gatePw").value;
  if(!(window.crypto&&crypto.subtle)){msg.textContent="Browser not supported";return;}
  crypto.subtle.digest("SHA-256",new TextEncoder().encode(pw)).then(function(b){
-  if(hex(b)===H){sessionStorage.setItem("d62ok","1");document.documentElement.className=document.documentElement.className.replace(" locked","");}
+  if(hex(b)===H){sessionStorage.setItem("d62ok","1");document.documentElement.className=document.documentElement.className.replace(" locked","");goLandscape();}
   else{msg.textContent="Wrong password";}
  });
 });
@@ -1090,5 +1094,6 @@ var cmMenuBar31MainHSplit = [_cmNoClick, '<td colspan="2" class="MenuBar31MainSp
 cmDrawFromText('MenuBar31', 'hbr', cmMenuBar31, 'MenuBar31');
 </script>
 </div>
+<div id="rot">&#8635; Rotate your phone to landscape &nbsp; <b onclick="this.parentNode.style.display='none'">OK</b></div>
 </body>
 </html>

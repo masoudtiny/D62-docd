@@ -2,24 +2,21 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=1520">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D62 - Baby Open Type Diapers</title>
 <meta name="generator" content="WYSIWYG Web Builder 12 - http://www.wysiwygwebbuilder.com">
 <script src="jscookmenu.min.js"></script>
 <link href="D62.css" rel="stylesheet">
 <link href="index.css" rel="stylesheet">
-<style>html.locked body > div:not(#gate){display:none !important}
+<style>html{background:#fff}html.locked{background:#f2f4f7}html.locked body > *:not(#gate):not(script){display:none !important}
 #gate{position:fixed;left:0;top:0;right:0;bottom:0;background:#f2f4f7;z-index:99999;display:none;align-items:center;justify-content:center;font-family:Arial,sans-serif}
 html.locked #gate{display:flex}
-#gate form{background:#fff;padding:28px 24px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.18);width:280px;max-width:86vw;text-align:center}
+#gate form{transform:scale(var(--inv,1));background:#fff;padding:28px 24px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.18);width:280px;max-width:86vw;text-align:center}
 #gate h2{font-size:20px;margin:0 0 16px}
 #gate input{width:100%;box-sizing:border-box;font-size:16px;padding:10px;border:1px solid #aaa;border-radius:4px}
 #gate button{margin-top:12px;width:100%;font-size:16px;padding:10px;border:0;border-radius:4px;background:#1f6fb5;color:#fff}
 #gate p{color:#c00;font-size:14px;min-height:18px;margin:10px 0 0}</style>
 <script>if(sessionStorage.getItem("d62ok")!=="1"){document.documentElement.className+=" locked";}</script>
-<style>#rot{display:none;position:fixed;left:0;right:0;bottom:0;z-index:5000;background:#1f6fb5;color:#fff;font:15px Arial,sans-serif;padding:10px 14px;text-align:center}
-#rot b{margin-left:12px;padding:2px 8px;border:1px solid #fff;border-radius:3px;cursor:pointer}
-@media (orientation:portrait) and (max-width:900px){#rot{display:block}}</style>
 </head>
 <body>
 <div id="gate"><form id="gateForm"><h2>D62</h2><input type="password" id="gatePw" placeholder="Password" autocomplete="current-password" autofocus><button type="submit">Enter</button><p id="gateMsg"></p></form></div>
@@ -1094,6 +1091,26 @@ var cmMenuBar31MainHSplit = [_cmNoClick, '<td colspan="2" class="MenuBar31MainSp
 cmDrawFromText('MenuBar31', 'hbr', cmMenuBar31, 'MenuBar31');
 </script>
 </div>
-<div id="rot">&#8635; Rotate your phone to landscape &nbsp; <b onclick="this.parentNode.style.display='none'">OK</b></div>
+<script>
+(function(){
+if(Math.min(screen.width,screen.height)>900)return;
+var W=1520,b=document.body,CH=0,last="",k=b.children;
+for(var i=0;i<k.length;i++){if(k[i].tagName==="DIV"&&k[i].id!=="gate"){var t=k[i].offsetTop+k[i].offsetHeight;if(t>CH)CH=t;}}
+CH+=20;
+function fit(){
+ var mn=Math.min(screen.width,screen.height),mx=Math.max(screen.width,screen.height);
+ var por=window.matchMedia("(orientation: portrait)").matches,S,tr;
+ if(por){S=Math.min(mx*0.93/W,mn/CH);tr="translate("+mn+"px,0) rotate(90deg) scale("+S+")";}
+ else{S=Math.min(mx/W,mn*0.93/CH);tr="scale("+S+")";}
+ b.style.position="absolute";b.style.left="0";b.style.top="0";b.style.margin="0";
+ b.style.width=W+"px";b.style.height=CH+"px";b.style.transformOrigin="0 0";
+ b.style.transform=tr;b.style.setProperty("--inv",String(1/S));
+ 
+}
+fit();
+window.addEventListener("resize",function(){var p=window.matchMedia("(orientation: portrait)").matches?"p":"l";if(p!==last){last=p;setTimeout(fit,150);}});
+last=window.matchMedia("(orientation: portrait)").matches?"p":"l";
+})();
+</script>
 </body>
 </html>

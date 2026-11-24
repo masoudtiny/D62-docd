@@ -8,8 +8,33 @@
 <script src="jscookmenu.min.js"></script>
 <link href="D62.css" rel="stylesheet">
 <link href="index.css" rel="stylesheet">
+<style>html.locked body > div:not(#gate){display:none !important}
+#gate{position:fixed;left:0;top:0;right:0;bottom:0;background:#f2f4f7;z-index:99999;display:none;align-items:center;justify-content:center;font-family:Arial,sans-serif}
+html.locked #gate{display:flex}
+#gate form{background:#fff;padding:28px 24px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.18);width:280px;max-width:86vw;text-align:center}
+#gate h2{font-size:20px;margin:0 0 16px}
+#gate input{width:100%;box-sizing:border-box;font-size:16px;padding:10px;border:1px solid #aaa;border-radius:4px}
+#gate button{margin-top:12px;width:100%;font-size:16px;padding:10px;border:0;border-radius:4px;background:#1f6fb5;color:#fff}
+#gate p{color:#c00;font-size:14px;min-height:18px;margin:10px 0 0}</style>
+<script>if(sessionStorage.getItem("d62ok")!=="1"){document.documentElement.className+=" locked";}</script>
 </head>
 <body>
+<div id="gate"><form id="gateForm"><h2>D62</h2><input type="password" id="gatePw" placeholder="Password" autocomplete="current-password" autofocus><button type="submit">Enter</button><p id="gateMsg"></p></form></div>
+<script>
+(function(){
+var H="88b41a8bfee9702df832c8cca1d5319a247ed42f2631b6eb1e064dfb7afa1c94";
+function hex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return("0"+x.toString(16)).slice(-2)}).join("")}
+document.getElementById("gateForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ var msg=document.getElementById("gateMsg"),pw=document.getElementById("gatePw").value;
+ if(!(window.crypto&&crypto.subtle)){msg.textContent="Browser not supported";return;}
+ crypto.subtle.digest("SHA-256",new TextEncoder().encode(pw)).then(function(b){
+  if(hex(b)===H){sessionStorage.setItem("d62ok","1");document.documentElement.className=document.documentElement.className.replace(" locked","");}
+  else{msg.textContent="Wrong password";}
+ });
+});
+})();
+</script>
 <div id="wb_MenuBar3" style="position:absolute;left:31px;top:130px;width:120px;height:48px;z-index:1000;">
 <div id="MenuBar3">
 <ul style="display:none;">

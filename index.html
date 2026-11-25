@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1f6fb5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1124,6 +1124,37 @@ function fit(){
 fit();
 window.addEventListener("resize",function(){var p=window.matchMedia("(orientation: portrait)").matches?"p":"l";if(p!==last){last=p;setTimeout(fit,150);}});
 last=window.matchMedia("(orientation: portrait)").matches?"p":"l";
+})();
+</script>
+<script>
+(function(){
+ if(!/^https?:$/.test(location.protocol))return;
+ var standalone=matchMedia("(display-mode: fullscreen)").matches||matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+ if("serviceWorker" in navigator){try{navigator.serviceWorker.register("sw.js").catch(function(){});}catch(e){}}
+ if(standalone){try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(function(){});}catch(e){}return;}
+ var de=document.documentElement,bar=document.createElement("div"),hint=document.createElement("div"),ht=null,dp=null;
+ bar.style.cssText="position:fixed;top:6px;left:6px;z-index:100000;display:flex;gap:8px;font:700 13px Arial,Tahoma,sans-serif";
+ hint.style.cssText="display:none;position:fixed;left:8px;right:8px;bottom:8px;z-index:100001;padding:10px 12px;border-radius:10px;background:rgba(30,37,44,.96);color:#f1f5f8;border:1px solid #65c8e8;font:13px Arial,Tahoma,sans-serif;direction:rtl;text-align:center";
+ function mk(t){var b=document.createElement("button");b.type="button";b.textContent=t;b.style.cssText="padding:6px 12px;border:0;border-radius:8px;background:#1f6fb5;color:#fff;font:inherit;cursor:pointer";return b;}
+ var ib=mk("\u0646\u0635\u0628 \u0628\u0631\u0646\u0627\u0645\u0647");ib.style.display="none";
+ var fb=mk("\u062a\u0645\u0627\u0645 \u0635\u0641\u062d\u0647");fb.style.display=(document.fullscreenEnabled||document.webkitFullscreenEnabled)?"inline-block":"none";
+ bar.appendChild(ib);bar.appendChild(fb);de.appendChild(bar);de.appendChild(hint);
+ function msg(t){hint.textContent=t;hint.style.display="block";clearTimeout(ht);ht=setTimeout(function(){hint.style.display="none";},9000);}
+ var ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+ addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;ib.style.display="inline-block";});
+ addEventListener("appinstalled",function(){ib.style.display="none";});
+ setTimeout(function(){ib.style.display="inline-block";},2500);
+ ib.addEventListener("click",function(){
+  if(dp){dp.prompt();dp=null;ib.style.display="none";return;}
+  msg(ios?"\u0628\u0631\u0627\u06cc \u0646\u0635\u0628: \u062f\u06a9\u0645\u0647 Share \u0631\u0627 \u0628\u0632\u0646 \u0648 \u00abAdd to Home Screen\u00bb \u0631\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646.":"\u0627\u0632 \u0645\u0646\u0648\u06cc \u22ee \u06a9\u0631\u0648\u0645 \u06af\u0632\u06cc\u0646\u0647 \u00abInstall app\u00bb \u06cc\u0627 \u00abAdd to Home screen\u00bb \u0631\u0627 \u0628\u0632\u0646.");
+ });
+ fb.addEventListener("click",function(){
+  var fs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(fs){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+  var rf=de.requestFullscreen||de.webkitRequestFullscreen;
+  if(rf){Promise.resolve(rf.call(de)).then(function(){return screen.orientation&&screen.orientation.lock?screen.orientation.lock("landscape"):null;}).catch(function(){});}
+ });
+ if(ios)msg("\u0628\u0631\u0627\u06cc \u0646\u0635\u0628: \u062f\u06a9\u0645\u0647 Share \u0631\u0627 \u0628\u0632\u0646 \u0648 \u00abAdd to Home Screen\u00bb \u0631\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646.");
 })();
 </script>
 </body>

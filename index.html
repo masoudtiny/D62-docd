@@ -2,7 +2,21 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f6fb5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="D62">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{
+var u=location.pathname,k="d62chk_"+u;
+if(sessionStorage.getItem(k)==="1")return;
+sessionStorage.setItem(k,"1");
+Promise.all([fetch(u,{cache:"no-store"}).then(function(r){return r.text()}),fetch(u).then(function(r){return r.text()})]).then(function(a){
+ if(a[0]!==a[1]){var q=location.search.replace(/([?&])_c=\d+&?/,"$1").replace(/[?&]$/,"");location.replace(u+(q?q+"&":"?")+"_c="+Date.now()+location.hash);}
+}).catch(function(){});
+}catch(e){}})();</script>
 <title>D62 - Baby Open Type Diapers</title>
 <meta name="generator" content="WYSIWYG Web Builder 12 - http://www.wysiwygwebbuilder.com">
 <script src="jscookmenu.min.js"></script>
@@ -39,7 +53,7 @@ document.getElementById("gateForm").addEventListener("submit",function(e){
 <div id="wb_MenuBar3" style="position:absolute;left:31px;top:130px;width:120px;height:48px;z-index:1000;">
 <div id="MenuBar3">
 <ul style="display:none;">
-<li><span></span><a href="./CAMBIO FORMATO.svg" target="_self">SIZE&nbsp;CHANGE</a>
+<li><span></span><a href="viewer.html?f=CAMBIO%20FORMATO.svg" target="_self">SIZE&nbsp;CHANGE</a>
 </li>
 </ul>
 </div>
@@ -105,9 +119,9 @@ cmDrawFromText('MenuBar4', 'hbr', cmMenuBar4, 'MenuBar4');
 <ul style="display:none;">
 <li><span></span><span>M01</span>
 <ul>
-<li><span></span><a href="./BIKA0035.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BIKA0035.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BIKA0035 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BIKA0035%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -141,7 +155,7 @@ cmDrawFromText('MenuBar20', 'hbr', cmMenuBar20, 'MenuBar20');
 <div id="wb_MenuBar5" style="position:absolute;left:274px;top:583px;width:74px;height:46px;z-index:1003;">
 <div id="MenuBar5">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0107_A.svg" target="_self">M20_A</a>
+<li><span></span><a href="viewer.html?f=BAKA0107_A.svg" target="_self">M20_A</a>
 </li>
 </ul>
 </div>
@@ -173,7 +187,7 @@ cmDrawFromText('MenuBar5', 'hbr', cmMenuBar5, 'MenuBar5');
 <div id="wb_MenuBar13" style="position:absolute;left:290px;top:236px;width:58px;height:46px;z-index:1004;">
 <div id="MenuBar13">
 <ul style="display:none;">
-<li><span></span><a href="./BEKA0008.svg" target="_self">M30</a>
+<li><span></span><a href="viewer.html?f=BEKA0008.svg" target="_self">M30</a>
 </li>
 </ul>
 </div>
@@ -207,9 +221,9 @@ cmDrawFromText('MenuBar13', 'hbr', cmMenuBar13, 'MenuBar13');
 <ul style="display:none;">
 <li><span></span><span>M08</span>
 <ul>
-<li><span></span><a href="./BMKA0082.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0082.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0082 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0082%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -245,9 +259,9 @@ cmDrawFromText('MenuBar21', 'hbr', cmMenuBar21, 'MenuBar21');
 <ul style="display:none;">
 <li><span></span><span>M09</span>
 <ul>
-<li><span></span><a href="./BMKA0083.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0083.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0083 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0083%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -283,9 +297,9 @@ cmDrawFromText('MenuBar22', 'hbr', cmMenuBar22, 'MenuBar22');
 <ul style="display:none;">
 <li><span></span><span>M04</span>
 <ul>
-<li><span></span><a href="./BMKA0078.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0078.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0078 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0078%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -321,9 +335,9 @@ cmDrawFromText('MenuBar24', 'hbr', cmMenuBar24, 'MenuBar24');
 <ul style="display:none;">
 <li><span></span><span>M05</span>
 <ul>
-<li><span></span><a href="./BMKA0079.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0079.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0079 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0079%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -359,9 +373,9 @@ cmDrawFromText('MenuBar25', 'hbr', cmMenuBar25, 'MenuBar25');
 <ul style="display:none;">
 <li><span></span><span>M06</span>
 <ul>
-<li><span></span><a href="./BMKA0080.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0080.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0080 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0080%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -397,9 +411,9 @@ cmDrawFromText('MenuBar26', 'hbr', cmMenuBar26, 'MenuBar26');
 <ul style="display:none;">
 <li><span></span><span>M07</span>
 <ul>
-<li><span></span><a href="./BMKA0081.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0081.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0081 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0081%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -467,7 +481,7 @@ cmDrawFromText('MenuBar11', 'hbr', cmMenuBar11, 'MenuBar11');
 <div id="wb_MenuBar1" style="position:absolute;left:1210px;top:579px;width:62px;height:55px;z-index:1013;">
 <div id="MenuBar1">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0112.svg" target="_self">M25</a>
+<li><span></span><a href="viewer.html?f=BAKA0112.svg" target="_self">M25</a>
 </li>
 </ul>
 </div>
@@ -502,7 +516,7 @@ cmDrawFromText('MenuBar1', 'hbr', cmMenuBar1, 'MenuBar1');
 <div id="wb_MenuBar6" style="position:absolute;left:1070px;top:583px;width:74px;height:46px;z-index:1016;">
 <div id="MenuBar6">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0111.svg" target="_self">M24</a>
+<li><span></span><a href="viewer.html?f=BAKA0111.svg" target="_self">M24</a>
 </li>
 </ul>
 </div>
@@ -534,7 +548,7 @@ cmDrawFromText('MenuBar6', 'hbr', cmMenuBar6, 'MenuBar6');
 <div id="wb_MenuBar16" style="position:absolute;left:363px;top:583px;width:74px;height:46px;z-index:1017;">
 <div id="MenuBar16">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0107_B.svg" target="_self">M20_B</a>
+<li><span></span><a href="viewer.html?f=BAKA0107_B.svg" target="_self">M20_B</a>
 </li>
 </ul>
 </div>
@@ -566,7 +580,7 @@ cmDrawFromText('MenuBar16', 'hbr', cmMenuBar16, 'MenuBar16');
 <div id="wb_MenuBar14" style="position:absolute;left:453px;top:583px;width:74px;height:46px;z-index:1018;">
 <div id="MenuBar14">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0108_A.svg" target="_self">M21_A</a>
+<li><span></span><a href="viewer.html?f=BAKA0108_A.svg" target="_self">M21_A</a>
 </li>
 </ul>
 </div>
@@ -598,7 +612,7 @@ cmDrawFromText('MenuBar14', 'hbr', cmMenuBar14, 'MenuBar14');
 <div id="wb_MenuBar15" style="position:absolute;left:548px;top:583px;width:74px;height:46px;z-index:1019;">
 <div id="MenuBar15">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0108_B.svg" target="_self">M21_B</a>
+<li><span></span><a href="viewer.html?f=BAKA0108_B.svg" target="_self">M21_B</a>
 </li>
 </ul>
 </div>
@@ -630,7 +644,7 @@ cmDrawFromText('MenuBar15', 'hbr', cmMenuBar15, 'MenuBar15');
 <div id="wb_MenuBar7" style="position:absolute;left:842px;top:583px;width:74px;height:46px;z-index:1020;">
 <div id="MenuBar7">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0110_A.svg" target="_self">M23_A</a>
+<li><span></span><a href="viewer.html?f=BAKA0110_A.svg" target="_self">M23_A</a>
 </li>
 </ul>
 </div>
@@ -662,7 +676,7 @@ cmDrawFromText('MenuBar7', 'hbr', cmMenuBar7, 'MenuBar7');
 <div id="wb_MenuBar17" style="position:absolute;left:954px;top:583px;width:74px;height:46px;z-index:1021;">
 <div id="MenuBar17">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0110_B.svg" target="_self">M23_B</a>
+<li><span></span><a href="viewer.html?f=BAKA0110_B.svg" target="_self">M23_B</a>
 </li>
 </ul>
 </div>
@@ -696,9 +710,9 @@ cmDrawFromText('MenuBar17', 'hbr', cmMenuBar17, 'MenuBar17');
 <ul style="display:none;">
 <li><span></span><span>M10</span>
 <ul>
-<li><span></span><a href="./BMKA0084.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0084.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0084 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0084%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -734,9 +748,9 @@ cmDrawFromText('MenuBar10', 'hbr', cmMenuBar10, 'MenuBar10');
 <ul style="display:none;">
 <li><span></span><span>M11</span>
 <ul>
-<li><span></span><a href="./BMKA0085.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0085.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0085 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0085%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -772,9 +786,9 @@ cmDrawFromText('MenuBar18', 'hbr', cmMenuBar18, 'MenuBar18');
 <ul style="display:none;">
 <li><span></span><span>M12</span>
 <ul>
-<li><span></span><a href="./BMKA0086.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0086.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0086 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0086%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -810,9 +824,9 @@ cmDrawFromText('MenuBar19', 'hbr', cmMenuBar19, 'MenuBar19');
 <ul style="display:none;">
 <li><span></span><span>M13</span>
 <ul>
-<li><span></span><a href="./BMKA0087.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0087.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0087 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0087%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -848,9 +862,9 @@ cmDrawFromText('MenuBar23', 'hbr', cmMenuBar23, 'MenuBar23');
 <ul style="display:none;">
 <li><span></span><span>M14</span>
 <ul>
-<li><span></span><a href="./BQKE0006.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BQKE0006.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BQKE0006 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BQKE0006%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -887,9 +901,9 @@ cmDrawFromText('MenuBar28', 'hbr', cmMenuBar28, 'MenuBar28');
 <li><span></span><a href="file://" target="_self">M19</a>
 
 <ul>
-<li><span></span><a href="./BMKA0077.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0077.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0077 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0077%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -926,9 +940,9 @@ cmDrawFromText('MenuBar8', 'hbr', cmMenuBar8, 'MenuBar8');
 <li><span></span><a href="file://" target="_self">M18</a>
 
 <ul>
-<li><span></span><a href="./BMKA0076.svg" target="_self">OPERATOR&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0076.svg" target="_self">OPERATOR&nbsp;SIDE</a>
 </li>
-<li><span></span><a href="./BMKA0076 TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
+<li><span></span><a href="viewer.html?f=BMKA0076%20TRANSMISSION.svg" target="_self">TRANSMISSION&nbsp;SIDE</a>
 </li>
 </ul>
 </li>
@@ -966,7 +980,7 @@ cmDrawFromText('MenuBar9', 'hbr', cmMenuBar9, 'MenuBar9');
 <div id="wb_MenuBar2" style="position:absolute;left:646px;top:583px;width:74px;height:46px;z-index:1031;">
 <div id="MenuBar2">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0109_A.svg" target="_self">M22_A</a>
+<li><span></span><a href="viewer.html?f=BAKA0109_A.svg" target="_self">M22_A</a>
 </li>
 </ul>
 </div>
@@ -998,7 +1012,7 @@ cmDrawFromText('MenuBar2', 'hbr', cmMenuBar2, 'MenuBar2');
 <div id="wb_MenuBar29" style="position:absolute;left:732px;top:583px;width:74px;height:46px;z-index:1032;">
 <div id="MenuBar29">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0109_B.svg" target="_self">M22_B</a>
+<li><span></span><a href="viewer.html?f=BAKA0109_B.svg" target="_self">M22_B</a>
 </li>
 </ul>
 </div>
@@ -1030,7 +1044,7 @@ cmDrawFromText('MenuBar29', 'hbr', cmMenuBar29, 'MenuBar29');
 <div id="wb_MenuBar30" style="position:absolute;left:1324px;top:583px;width:74px;height:46px;z-index:1033;">
 <div id="MenuBar30">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0113_A.svg" target="_self">M26_A</a>
+<li><span></span><a href="viewer.html?f=BAKA0113_A.svg" target="_self">M26_A</a>
 </li>
 </ul>
 </div>
@@ -1062,7 +1076,7 @@ cmDrawFromText('MenuBar30', 'hbr', cmMenuBar30, 'MenuBar30');
 <div id="wb_MenuBar31" style="position:absolute;left:1405px;top:583px;width:74px;height:46px;z-index:1034;">
 <div id="MenuBar31">
 <ul style="display:none;">
-<li><span></span><a href="./BAKA0113_B.svg" target="_self">M26_B</a>
+<li><span></span><a href="viewer.html?f=BAKA0113_B.svg" target="_self">M26_B</a>
 </li>
 </ul>
 </div>
@@ -1093,7 +1107,7 @@ cmDrawFromText('MenuBar31', 'hbr', cmMenuBar31, 'MenuBar31');
 </div>
 <script>
 (function(){
-if(Math.min(screen.width,screen.height)>900)return;
+if(!window.matchMedia("(hover: none) and (pointer: coarse)").matches)return;
 var W=1520,b=document.body,CH=0,last="",k=b.children;
 for(var i=0;i<k.length;i++){if(k[i].tagName==="DIV"&&k[i].id!=="gate"){var t=k[i].offsetTop+k[i].offsetHeight;if(t>CH)CH=t;}}
 CH+=20;

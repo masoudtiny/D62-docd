@@ -1109,8 +1109,8 @@ cmDrawFromText('MenuBar31', 'hbr', cmMenuBar31, 'MenuBar31');
 (function(){
 if(!window.matchMedia("(hover: none) and (pointer: coarse)").matches)return;
 var W=1520,b=document.body,CH=0,last="",k=b.children;
-for(var i=0;i<k.length;i++){if(k[i].tagName==="DIV"&&k[i].id!=="gate"){var t=k[i].offsetTop+k[i].offsetHeight;if(t>CH)CH=t;}}
-CH+=20;
+for(var i=0;i<k.length;i++){if(k[i].tagName==="DIV"&&k[i].id!=="gate"){var t=(parseFloat(k[i].style.top)||0)+(parseFloat(k[i].style.height)||0);if(t>CH)CH=t;}}
+if(CH<300)CH=680;CH+=20;
 function fit(){
  var mn=Math.min(screen.width,screen.height),mx=Math.max(screen.width,screen.height);
  var por=window.matchMedia("(orientation: portrait)").matches,S,tr;

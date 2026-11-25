@@ -14,7 +14,7 @@ Promise.all([fetch(u,{cache:"no-store"}).then(function(r){return r.text()}),fetc
 <title>D62 - Drawing</title>
 <style>
 html,body{margin:0;padding:0;height:100%;background:#fff;overflow:hidden;font-family:Arial,sans-serif}
-#st{position:fixed;left:0;top:0;width:100vw;height:100vh;display:flex;flex-direction:column}
+#st{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;display:flex;flex-direction:column}
 #bar{flex:0 0 34px;background:#1f6fb5;color:#fff;display:flex;align-items:center;padding:0 10px;font-size:15px;box-sizing:border-box;gap:8px}
 #bar a,#bar button{color:#fff;text-decoration:none;border:1px solid #fff;border-radius:3px;padding:2px 10px;background:transparent;font:inherit;cursor:pointer;line-height:22px}
 #nm{flex:1 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:4px}
@@ -22,7 +22,7 @@ html,body{margin:0;padding:0;height:100%;background:#fff;overflow:hidden;font-fa
 #wrap{flex:1 1 auto;overflow:auto;position:relative;background:#fff}
 #v{display:block;border:0;background:#fff}
 @media (orientation:portrait) and (max-width:900px) and (hover:none) and (pointer:coarse){
- #st{width:100vh;height:100vw;left:100vw;transform-origin:0 0;transform:rotate(90deg)}
+ #st{width:100vh;width:100dvh;height:100vw;left:100vw;transform-origin:0 0;transform:rotate(90deg)}
 }
 </style>
 </head>
@@ -38,7 +38,13 @@ var $=function(i){return document.getElementById(i)},wrap=$("wrap"),v=$("v"),z=1
 var f=new URLSearchParams(location.search).get("f")||"";
 if(!/^[A-Za-z0-9_ ().\-]+\.svg$/i.test(f)){$("nm").textContent="Invalid file";return;}
 $("nm").textContent=f;document.title="D62 - "+f;
-function applySize(){v.style.width=Math.round(wrap.clientWidth*z)+"px";v.style.height=Math.round(wrap.clientHeight*z)+"px";$("zl").textContent=Math.round(z*100)+"%";}
+var PORT=window.matchMedia("(orientation:portrait) and (max-width:900px) and (hover:none) and (pointer:coarse)");
+function layout(){
+ var st=$("st"),vv=window.visualViewport,W=Math.round(vv?vv.width:window.innerWidth),H=Math.round(vv?vv.height:window.innerHeight);
+ if(PORT.matches){st.style.width=H+"px";st.style.height=W+"px";st.style.left=W+"px";}
+ else{st.style.width=W+"px";st.style.height=H+"px";st.style.left="0";}
+}
+function applySize(){layout();v.style.width=Math.round(wrap.clientWidth*z)+"px";v.style.height=Math.round(wrap.clientHeight*z)+"px";$("zl").textContent=Math.round(z*100)+"%";}
 function setZoom(nz,fx,fy){
  nz=Math.max(1,Math.min(MAXZ,nz));if(nz===z)return;
  if(fx==null){fx=wrap.clientWidth/2;fy=wrap.clientHeight/2;}
@@ -49,7 +55,9 @@ function setZoom(nz,fx,fy){
 $("zi").addEventListener("click",function(){setZoom(z*1.5);});
 $("zo").addEventListener("click",function(){setZoom(z/1.5);});
 $("zl").addEventListener("click",function(){setZoom(1);wrap.scrollLeft=0;wrap.scrollTop=0;});
-window.addEventListener("resize",function(){setTimeout(applySize,150);});
+function relayout(){setTimeout(function(){applySize();try{var d=v.contentDocument;if(d)fitBox(d);}catch(e){}},150);}
+window.addEventListener("resize",relayout);window.addEventListener("orientationchange",relayout);
+if(window.visualViewport)window.visualViewport.addEventListener("resize",relayout);
 $("back").addEventListener("click",function(e){if(history.length>1){e.preventDefault();history.back();}});
 /* make the whole drawing visible: set the viewBox to the real bounds of everything drawn (table included) */
 function contentBox(s){

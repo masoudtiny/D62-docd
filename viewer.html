@@ -78,9 +78,34 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
     clamp(); apply();
   }
 
+  function isImg(f){ return /\.(png|jpe?g|gif|webp|bmp)$/i.test(f); }
+
+  function setup(w, h){
+    W = w; H = h;
+    content.style.width = W + "px";
+    content.style.height = H + "px";
+    msg.style.display = "none";
+    fitAll();
+  }
+
   function load(){
     if (!file) { msg.textContent = "No file specified"; return; }
-    fetch(encodeURI(decodeURIComponent(file))).then(function(r){
+    var url = encodeURI(file);
+    if (isImg(file)){
+      var im = new Image();
+      im.draggable = false;
+      im.onload = function(){
+        im.style.display = "block";
+        im.style.width = im.naturalWidth + "px";
+        im.style.height = im.naturalHeight + "px";
+        content.appendChild(im);
+        setup(im.naturalWidth, im.naturalHeight);
+      };
+      im.onerror = function(){ msg.textContent = "Cannot load file"; };
+      im.src = url;
+      return;
+    }
+    fetch(url).then(function(r){
       if (!r.ok) throw new Error(r.status);
       return r.text();
     }).then(function(txt){
@@ -89,21 +114,60 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
       if (!svg) throw new Error("not svg");
       var vb = svg.viewBox && svg.viewBox.baseVal;
       var w = parseFloat(svg.getAttribute("width")), h = parseFloat(svg.getAttribute("height"));
-      if (vb && vb.width && vb.height) { W = vb.width; H = vb.height; }
-      else if (w && h) { W = w; H = h; }
-      else { var bb = svg.getBBox(); W = bb.x + bb.width; H = bb.y + bb.height; }
-      svg.setAttribute("width", W);
-      svg.setAttribute("height", H);
-      svg.style.width = W + "px";
-      svg.style.height = H + "px";
-      content.style.width = W + "px";
-      content.style.height = H + "px";
-      msg.style.display = "none";
-      fitAll();
+      var nw, nh;
+      if (vb && vb.width && vb.height) { nw = vb.width; nh = vb.height; }
+      else if (w && h) { nw = w; nh = h; }
+      else { var bb = svg.getBBox(); nw = bb.x + bb.width; nh = bb.y + bb.height; }
+      svg.setAttribute("width", nw);
+      svg.setAttribute("height", nh);
+      svg.style.width = nw + "px";
+      svg.style.height = nh + "px";
+      setup(nw, nh);
     }).catch(function(){
       msg.textContent = "Cannot load file";
     });
   }
+
+  // ---- links inside the drawing (numbers / parts): open them inside this viewer ----
+  var FILE_RE = /([^'"\s()=]+\.(?:svg|png|jpe?g|gif|webp|bmp|pdf|html?))(?:[?#][^'"\s)]*)?/i;
+  var ATTRS = ["href", "xlink:href", "onclick", "data-href", "data-src", "data-url", "data-link", "data-file"];
+
+  // finds where an element (or one of its parents) wants to go: <a href>, onclick="...", data-*
+  function targetOf(el){
+    while (el && el !== stage && el.getAttribute){
+      var isA = el.tagName && el.tagName.toLowerCase() === "a";
+      for (var i = 0; i < ATTRS.length; i++){
+        var v = el.getAttribute(ATTRS[i]);
+        if (!v) continue;
+        if (v.charAt(0) === "#") continue;
+        if (isA && (ATTRS[i] === "href" || ATTRS[i] === "xlink:href")) return v;
+        var m = v.match(FILE_RE);
+        if (m) return m[0];
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+  function openLink(h){
+    var base = new URL(encodeURI(file), location.href);
+    var u;
+    try { u = new URL(h, base); } catch(e){ return false; }
+    var dir = location.pathname.replace(/[^\/]*$/, "");
+    var local = u.origin === location.origin && u.pathname.indexOf(dir) === 0;
+    var name = local ? decodeURIComponent(u.pathname.slice(dir.length)) : "";
+    if (local && (/\.svg$/i.test(name) || isImg(name))){
+      location.href = "viewer.html?f=" + encodeURIComponent(name);
+    } else {
+      location.href = u.href;     // pdf, html, etc.
+    }
+    return true;
+  }
+
+  // block the drawing's own click handling / link navigation; openLink() does it instead
+  stage.addEventListener("click", function(e){
+    if (targetOf(e.target)){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
 
   // ---- gestures: one finger = pan, two fingers = pinch zoom, double tap = zoom ----
   var pts = {};           // active pointers
@@ -158,6 +222,8 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
       pts[k] = {x: pts[k].x, y: pts[k].y};
     }
     if (wasOne && !moved && e.type === "pointerup"){
+      var tg = targetOf(document.elementFromPoint(e.clientX, e.clientY));
+      if (tg && openLink(tg)) return;
       var now = Date.now();
       var r = stage.getBoundingClientRect();
       var x = e.clientX - r.left, y = e.clientY - r.top;

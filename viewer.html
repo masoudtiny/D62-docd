@@ -2,269 +2,111 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#1f6fb5">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{
+var u=location.pathname,k="d62chk_"+u;
+if(sessionStorage.getItem(k)==="1")return;
+sessionStorage.setItem(k,"1");
+Promise.all([fetch(u,{cache:"no-store"}).then(function(r){return r.text()}),fetch(u).then(function(r){return r.text()})]).then(function(a){
+ if(a[0]!==a[1]){var q=location.search.replace(/([?&])_c=\d+&?/,"$1").replace(/[?&]$/,"");location.replace(u+(q?q+"&":"?")+"_c="+Date.now()+location.hash);}
+}).catch(function(){});
+}catch(e){}})();</script>
+<title>D62 - Drawing</title>
 <style>
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#fff;
-  font-family:Arial,Tahoma,sans-serif;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
-#bar{position:fixed;left:0;top:0;right:0;height:56px;background:#1f6fb5;color:#fff;z-index:10;
-  display:flex;align-items:center;gap:14px;padding:0 12px;box-sizing:border-box;
-  padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
-#bar button{font:inherit;font-size:16px;color:#fff;background:transparent;border:1px solid #fff;
-  border-radius:8px;padding:6px 14px;cursor:pointer}
-#title{font-size:20px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#stage{position:fixed;left:0;right:0;bottom:0;top:56px;overflow:hidden;touch-action:none;background:#fff}
-#content{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
-#content svg{display:block}
-#msg{position:absolute;left:0;right:0;top:40%;text-align:center;color:#555;font-size:16px}
+html,body{margin:0;padding:0;height:100%;background:#fff;overflow:hidden;font-family:Arial,sans-serif}
+#st{position:fixed;left:0;top:0;width:100vw;height:100vh;display:flex;flex-direction:column}
+#bar{flex:0 0 34px;background:#1f6fb5;color:#fff;display:flex;align-items:center;padding:0 10px;font-size:15px;box-sizing:border-box;gap:8px}
+#bar a,#bar button{color:#fff;text-decoration:none;border:1px solid #fff;border-radius:3px;padding:2px 10px;background:transparent;font:inherit;cursor:pointer;line-height:22px}
+#nm{flex:1 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:4px}
+#zl{min-width:52px}
+#wrap{flex:1 1 auto;overflow:auto;position:relative;background:#fff}
+#v{display:block;border:0;background:#fff}
+@media (orientation:portrait) and (max-width:900px) and (hover:none) and (pointer:coarse){
+ #st{width:100vh;height:100vw;left:100vw;transform-origin:0 0;transform:rotate(90deg)}
+}
 </style>
 </head>
 <body>
-<div id="bar">
-  <button id="back" type="button">&larr; Back</button>
-  <div id="title"></div>
-  <button id="fit" type="button" title="Fit to screen">&#x2922; Fit</button>
+<div id="st">
+<div id="bar"><a href="index.html" id="back">&#8592; Back</a><span id="nm"></span><button id="zo" type="button">&#8722;</button><button id="zl" type="button">100%</button><button id="zi" type="button">+</button></div>
+<div id="wrap"><iframe id="v" title="drawing"></iframe></div>
 </div>
-<div id="stage"><div id="content"></div><div id="msg">Loading...</div></div>
-
 <script>
 (function(){
-  var q = new URLSearchParams(location.search);
-  var file = q.get("f") || "";
-  document.getElementById("title").textContent = file;
-  document.title = file || "Viewer";
-
-  document.getElementById("back").onclick = function(){
-    if (history.length > 1) history.back(); else location.href = "index.html";
-  };
-
-  var stage = document.getElementById("stage");
-  var content = document.getElementById("content");
-  var msg = document.getElementById("msg");
-  var W = 0, H = 0;               // natural size of the drawing
-  var scale = 1, tx = 0, ty = 0;  // current transform
-  var fitScale = 1;
-  var MAXZOOM = 12;               // x of fit scale
-
-  function apply(){ content.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")"; }
-
-  // keep drawing inside the screen (centered when smaller than the screen)
-  function clamp(){
-    var sw = stage.clientWidth, sh = stage.clientHeight;
-    var cw = W * scale, ch = H * scale;
-    if (cw <= sw) tx = (sw - cw) / 2; else tx = Math.min(0, Math.max(sw - cw, tx));
-    if (ch <= sh) ty = (sh - ch) / 2; else ty = Math.min(0, Math.max(sh - ch, ty));
+try{if(sessionStorage.getItem("d62ok")!=="1"){location.replace("index.html");return;}}catch(e){}
+var $=function(i){return document.getElementById(i)},wrap=$("wrap"),v=$("v"),z=1,MAXZ=8;
+var f=new URLSearchParams(location.search).get("f")||"";
+if(!/^[A-Za-z0-9_ ().\-]+\.svg$/i.test(f)){$("nm").textContent="Invalid file";return;}
+$("nm").textContent=f;document.title="D62 - "+f;
+function applySize(){v.style.width=Math.round(wrap.clientWidth*z)+"px";v.style.height=Math.round(wrap.clientHeight*z)+"px";$("zl").textContent=Math.round(z*100)+"%";}
+function setZoom(nz,fx,fy){
+ nz=Math.max(1,Math.min(MAXZ,nz));if(nz===z)return;
+ if(fx==null){fx=wrap.clientWidth/2;fy=wrap.clientHeight/2;}
+ var px=(wrap.scrollLeft+fx)/v.offsetWidth,py=(wrap.scrollTop+fy)/v.offsetHeight;
+ z=nz;applySize();
+ wrap.scrollLeft=px*v.offsetWidth-fx;wrap.scrollTop=py*v.offsetHeight-fy;
+}
+$("zi").addEventListener("click",function(){setZoom(z*1.5);});
+$("zo").addEventListener("click",function(){setZoom(z/1.5);});
+$("zl").addEventListener("click",function(){setZoom(1);wrap.scrollLeft=0;wrap.scrollTop=0;});
+window.addEventListener("resize",function(){setTimeout(applySize,150);});
+$("back").addEventListener("click",function(e){if(history.length>1){e.preventDefault();history.back();}});
+/* make the whole drawing visible: widen the viewBox to the real content bounds */
+function fitBox(d){try{
+ var s=d.documentElement,vb=(s.getAttribute("viewBox")||"").split(/[\s,]+/).map(parseFloat),bb=s.getBBox();
+ if(vb.length===4&&bb.width>0&&bb.height>0&&bb.width<vb[2]*2&&bb.height<vb[3]*2){
+  var x=Math.min(vb[0],bb.x),y=Math.min(vb[1],bb.y),r=Math.max(vb[0]+vb[2],bb.x+bb.width),b=Math.max(vb[1]+vb[3],bb.y+bb.height),p=(r-x)*0.01;
+  s.setAttribute("viewBox",(x-p)+" "+(y-p)+" "+(r-x+2*p)+" "+(b-y+2*p));
+ }
+}catch(e){}}
+/* one finger = pan, two fingers = pinch zoom (inside the drawing) */
+function attach(d){
+ try{d.documentElement.style.touchAction="none";}catch(e){}
+ var mode=0,a={},moved=false,d0=0,z0=1,m0={fx:0,fy:0};
+ function dist(p,q){return Math.hypot(p.clientX-q.clientX,p.clientY-q.clientY);}
+ function startPan(t,mv){mode=1;moved=mv;a={x:t.clientX,y:t.clientY,sx:t.screenX,sy:t.screenY};}
+ d.addEventListener("touchstart",function(e){
+  var t=e.touches;
+  if(t.length===1){startPan(t[0],false);}
+  else if(t.length===2){
+   mode=2;d0=dist(t[0],t[1])||1;z0=z;
+   m0={fx:((t[0].clientX+t[1].clientX)/2)/v.offsetWidth,fy:((t[0].clientY+t[1].clientY)/2)/v.offsetHeight};
   }
-
-  function computeFit(){
-    var sw = stage.clientWidth, sh = stage.clientHeight;
-    fitScale = Math.min(sw / W, sh / H);
+ },{passive:true});
+ d.addEventListener("touchmove",function(e){
+  var t=e.touches;
+  if(mode===1&&t.length===1){
+   if(!moved&&Math.hypot(t[0].screenX-a.sx,t[0].screenY-a.sy)>8)moved=true;
+   if(moved){e.preventDefault();wrap.scrollLeft+=a.x-t[0].clientX;wrap.scrollTop+=a.y-t[0].clientY;}
+  }else if(mode===2&&t.length>=2){
+   e.preventDefault();
+   var mx=(t[0].clientX+t[1].clientX)/2-wrap.scrollLeft,my=(t[0].clientY+t[1].clientY)/2-wrap.scrollTop;
+   z=Math.max(1,Math.min(MAXZ,z0*dist(t[0],t[1])/d0));applySize();
+   wrap.scrollLeft=m0.fx*v.offsetWidth-mx;wrap.scrollTop=m0.fy*v.offsetHeight-my;
   }
-
-  function fitAll(){
-    computeFit();
-    scale = fitScale; clamp(); apply();
-  }
-
-  function zoomAt(newScale, cx, cy){
-    newScale = Math.max(fitScale, Math.min(fitScale * MAXZOOM, newScale));
-    var k = newScale / scale;
-    tx = cx - (cx - tx) * k;
-    ty = cy - (cy - ty) * k;
-    scale = newScale;
-    clamp(); apply();
-  }
-
-  function isImg(f){ return /\.(png|jpe?g|gif|webp|bmp)$/i.test(f); }
-
-  function setup(w, h){
-    W = w; H = h;
-    content.style.width = W + "px";
-    content.style.height = H + "px";
-    msg.style.display = "none";
-    fitAll();
-  }
-
-  function load(){
-    if (!file) { msg.textContent = "No file specified"; return; }
-    var url = encodeURI(file);
-    if (isImg(file)){
-      var im = new Image();
-      im.draggable = false;
-      im.onload = function(){
-        im.style.display = "block";
-        im.style.width = im.naturalWidth + "px";
-        im.style.height = im.naturalHeight + "px";
-        content.appendChild(im);
-        setup(im.naturalWidth, im.naturalHeight);
-      };
-      im.onerror = function(){ msg.textContent = "Cannot load file"; };
-      im.src = url;
-      return;
-    }
-    fetch(url).then(function(r){
-      if (!r.ok) throw new Error(r.status);
-      return r.text();
-    }).then(function(txt){
-      content.innerHTML = txt;
-      var svg = content.querySelector("svg");
-      if (!svg) throw new Error("not svg");
-      var vb = svg.viewBox && svg.viewBox.baseVal;
-      var w = parseFloat(svg.getAttribute("width")), h = parseFloat(svg.getAttribute("height"));
-      var nw, nh;
-      if (vb && vb.width && vb.height) { nw = vb.width; nh = vb.height; }
-      else if (w && h) { nw = w; nh = h; }
-      else { var bb = svg.getBBox(); nw = bb.x + bb.width; nh = bb.y + bb.height; }
-      svg.setAttribute("width", nw);
-      svg.setAttribute("height", nh);
-      svg.style.width = nw + "px";
-      svg.style.height = nh + "px";
-      setup(nw, nh);
-    }).catch(function(){
-      msg.textContent = "Cannot load file";
-    });
-  }
-
-  // ---- links inside the drawing (numbers / parts): open them inside this viewer ----
-  var FILE_RE = /([^'"\s()=]+\.(?:svg|png|jpe?g|gif|webp|bmp|pdf|html?))(?:[?#][^'"\s)]*)?/i;
-  var ATTRS = ["href", "xlink:href", "onclick", "data-href", "data-src", "data-url", "data-link", "data-file"];
-
-  // finds where an element (or one of its parents) wants to go: <a href>, onclick="...", data-*
-  function targetOf(el){
-    while (el && el !== stage && el.getAttribute){
-      var isA = el.tagName && el.tagName.toLowerCase() === "a";
-      for (var i = 0; i < ATTRS.length; i++){
-        var v = el.getAttribute(ATTRS[i]);
-        if (!v) continue;
-        if (v.charAt(0) === "#") continue;
-        if (isA && (ATTRS[i] === "href" || ATTRS[i] === "xlink:href")) return v;
-        var m = v.match(FILE_RE);
-        if (m) return m[0];
-      }
-      el = el.parentNode;
-    }
-    return null;
-  }
-
-  function openLink(h){
-    var base = new URL(encodeURI(file), location.href);
-    var u;
-    try { u = new URL(h, base); } catch(e){ return false; }
-    var dir = location.pathname.replace(/[^\/]*$/, "");
-    var local = u.origin === location.origin && u.pathname.indexOf(dir) === 0;
-    var name = local ? decodeURIComponent(u.pathname.slice(dir.length)) : "";
-    if (local && (/\.svg$/i.test(name) || isImg(name))){
-      location.href = "viewer.html?f=" + encodeURIComponent(name);
-    } else {
-      location.href = u.href;     // pdf, html, etc.
-    }
-    return true;
-  }
-
-  // block the drawing's own click handling / link navigation; openLink() does it instead
-  stage.addEventListener("click", function(e){
-    if (targetOf(e.target)){ e.preventDefault(); e.stopPropagation(); }
-  }, true);
-
-  // ---- gestures: one finger = pan, two fingers = pinch zoom, double tap = zoom ----
-  var pts = {};           // active pointers
-  var startDist = 0, startScale = 1, lastTap = 0, moved = false, lastTapX = 0, lastTapY = 0;
-
-  function count(){ return Object.keys(pts).length; }
-  function two(){
-    var k = Object.keys(pts);
-    return [pts[k[0]], pts[k[1]]];
-  }
-
-  stage.addEventListener("pointerdown", function(e){
-    if (!W) return;
-    stage.setPointerCapture(e.pointerId);
-    pts[e.pointerId] = {x: e.clientX, y: e.clientY};
-    moved = false;
-    if (count() === 2){
-      var p = two();
-      startDist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
-      startScale = scale;
-    }
-  });
-
-  stage.addEventListener("pointermove", function(e){
-    if (!pts[e.pointerId]) return;
-    var old = pts[e.pointerId];
-    var nx = e.clientX, ny = e.clientY;
-    if (count() === 1){
-      var dx = nx - old.x, dy = ny - old.y;
-      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
-      tx += dx; ty += dy;
-      clamp(); apply();
-      pts[e.pointerId] = {x: nx, y: ny};
-    } else if (count() === 2){
-      pts[e.pointerId] = {x: nx, y: ny};
-      var p = two();
-      var d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
-      var r = stage.getBoundingClientRect();
-      var cx = (p[0].x + p[1].x) / 2 - r.left, cy = (p[0].y + p[1].y) / 2 - r.top;
-      if (startDist > 0) zoomAt(startScale * d / startDist, cx, cy);
-      moved = true;
-    }
-  });
-
-  function up(e){
-    if (!pts[e.pointerId]) return;
-    var wasOne = count() === 1;
-    delete pts[e.pointerId];
-    if (count() === 1){
-      // continue panning with the remaining finger
-      var k = Object.keys(pts)[0];
-      pts[k] = {x: pts[k].x, y: pts[k].y};
-    }
-    if (wasOne && !moved && e.type === "pointerup"){
-      var tg = targetOf(document.elementFromPoint(e.clientX, e.clientY));
-      if (tg && openLink(tg)) return;
-      var now = Date.now();
-      var r = stage.getBoundingClientRect();
-      var x = e.clientX - r.left, y = e.clientY - r.top;
-      if (now - lastTap < 320 && Math.hypot(x - lastTapX, y - lastTapY) < 40){
-        if (scale > fitScale * 1.2) fitAll();
-        else zoomAt(fitScale * 3, x, y);
-        lastTap = 0;
-      } else { lastTap = now; lastTapX = x; lastTapY = y; }
-    }
-  }
-  stage.addEventListener("pointerup", up);
-  stage.addEventListener("pointercancel", up);
-
-  // mouse wheel (desktop)
-  stage.addEventListener("wheel", function(e){
-    if (!W) return;
-    e.preventDefault();
-    var r = stage.getBoundingClientRect();
-    zoomAt(scale * Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
-  }, {passive:false});
-
-  // block the browser's own pinch/gesture zoom
-  ["gesturestart","gesturechange","gestureend"].forEach(function(n){
-    document.addEventListener(n, function(e){ e.preventDefault(); });
-  });
-
-  document.getElementById("fit").onclick = fitAll;
-
-  // keep the view valid when the screen rotates / resizes
-  var wasFit = true;
-  window.addEventListener("resize", function(){
-    if (!W) return;
-    var atFit = Math.abs(scale - fitScale) < 0.001;
-    setTimeout(function(){
-      computeFit();
-      if (atFit || scale < fitScale) scale = fitScale;
-      clamp(); apply();
-    }, 150);
-  });
-
-  load();
+ },{passive:false});
+ function end(e){var t=e.touches;if(t.length===1)startPan(t[0],true);else if(t.length===0)mode=0;}
+ d.addEventListener("touchend",end,{passive:true});
+ d.addEventListener("touchcancel",end,{passive:true});
+}
+/* links inside the drawing (part numbers) must open INSIDE this viewer, so the bar (Back / zoom / fit) stays */
+function keepInside(d){
+ try{
+  var w=v.contentWindow,as=d.getElementsByTagName("a"),i;
+  for(i=0;i<as.length;i++)as[i].setAttribute("target","_self");
+  d.addEventListener("click",function(e){var el=e.target;
+   while(el&&el.nodeType===1){if(el.tagName&&el.tagName.toLowerCase()==="a")el.setAttribute("target","_self");el=el.parentNode;}
+  },true);
+  w.open=function(u){if(u)w.location.href=u;return w;};
+ }catch(e){}
+ try{
+  var n=decodeURIComponent((v.contentWindow.location.pathname||"").split("/").pop());
+  if(n){$("nm").textContent=n;document.title="D62 - "+n;}
+ }catch(e){}
+}
+v.addEventListener("load",function(){try{var d=v.contentDocument;if(d){z=1;applySize();wrap.scrollLeft=0;wrap.scrollTop=0;keepInside(d);fitBox(d);attach(d);}}catch(e){}});
+applySize();
+v.src=encodeURIComponent(f).replace(/%28/g,"(").replace(/%29/g,")");
 })();
 </script>
 </body>

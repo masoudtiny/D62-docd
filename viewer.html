@@ -51,13 +51,40 @@ $("zo").addEventListener("click",function(){setZoom(z/1.5);});
 $("zl").addEventListener("click",function(){setZoom(1);wrap.scrollLeft=0;wrap.scrollTop=0;});
 window.addEventListener("resize",function(){setTimeout(applySize,150);});
 $("back").addEventListener("click",function(e){if(history.length>1){e.preventDefault();history.back();}});
-/* make the whole drawing visible: widen the viewBox to the real content bounds */
-function fitBox(d){try{
- var s=d.documentElement,vb=(s.getAttribute("viewBox")||"").split(/[\s,]+/).map(parseFloat),bb=s.getBBox();
- if(vb.length===4&&bb.width>0&&bb.height>0&&bb.width<vb[2]*2&&bb.height<vb[3]*2){
-  var x=Math.min(vb[0],bb.x),y=Math.min(vb[1],bb.y),r=Math.max(vb[0]+vb[2],bb.x+bb.width),b=Math.max(vb[1]+vb[3],bb.y+bb.height),p=(r-x)*0.01;
-  s.setAttribute("viewBox",(x-p)+" "+(y-p)+" "+(r-x+2*p)+" "+(b-y+2*p));
+/* make the whole drawing visible: set the viewBox to the real bounds of everything drawn (table included) */
+function contentBox(s){
+ var ctm=s.getScreenCTM();if(!ctm)return null;
+ var inv=ctm.inverse(),x0=1e12,y0=1e12,x1=-1e12,y1=-1e12,ok=false,pt=s.createSVGPoint();
+ var skip={defs:1,style:1,script:1,title:1,desc:1,metadata:1,clippath:1,mask:1,lineargradient:1,radialgradient:1,pattern:1,marker:1,symbol:1};
+ function add(x,y){pt.x=x;pt.y=y;var q=pt.matrixTransform(inv);
+  if(q.x<x0)x0=q.x;if(q.x>x1)x1=q.x;if(q.y<y0)y0=q.y;if(q.y>y1)y1=q.y;}
+ var k=s.children,i;
+ for(i=0;i<k.length;i++){
+  var n=(k[i].localName||"").toLowerCase();if(skip[n])continue;
+  var r=k[i].getBoundingClientRect();if(!(r.width>0||r.height>0))continue;
+  add(r.left,r.top);add(r.right,r.top);add(r.left,r.bottom);add(r.right,r.bottom);ok=true;
  }
+ return ok?{x:x0,y:y0,r:x1,b:y1}:null;
+}
+function fitBox(d){try{
+ var s=d.documentElement;
+ if(!s.__vb0){
+  var vb=(s.getAttribute("viewBox")||"").split(/[\s,]+/).map(parseFloat);
+  if(vb.length===4&&vb[2]>0&&vb[3]>0)s.__vb0=vb;
+  else{var w=parseFloat(s.getAttribute("width")),h=parseFloat(s.getAttribute("height"));
+   s.__vb0=(w>0&&h>0)?[0,0,w,h]:null;}
+ }
+ var o=s.__vb0,bb=s.getBBox(),c=contentBox(s);
+ var x=bb.x,y=bb.y,r=bb.x+bb.width,b=bb.y+bb.height;
+ if(!(bb.width>0&&bb.height>0)){x=1e12;y=1e12;r=-1e12;b=-1e12;}
+ if(c){x=Math.min(x,c.x);y=Math.min(y,c.y);r=Math.max(r,c.r);b=Math.max(b,c.b);}
+ if(o){x=Math.min(x,o[0]);y=Math.min(y,o[1]);r=Math.max(r,o[0]+o[2]);b=Math.max(b,o[1]+o[3]);}
+ if(!(r>x&&b>y))return;
+ if(o&&((r-x)>o[2]*6||(b-y)>o[3]*6))return;   /* ignore absurd bounds */
+ var p=Math.max(r-x,b-y)*0.01;
+ s.setAttribute("viewBox",(x-p)+" "+(y-p)+" "+(r-x+2*p)+" "+(b-y+2*p));
+ s.setAttribute("preserveAspectRatio","xMidYMid meet");
+ s.setAttribute("width","100%");s.setAttribute("height","100%");
 }catch(e){}}
 /* one finger = pan, two fingers = pinch zoom (inside the drawing) */
 function attach(d){
@@ -104,7 +131,7 @@ function keepInside(d){
   if(n){$("nm").textContent=n;document.title="D62 - "+n;}
  }catch(e){}
 }
-v.addEventListener("load",function(){try{var d=v.contentDocument;if(d){z=1;applySize();wrap.scrollLeft=0;wrap.scrollTop=0;keepInside(d);fitBox(d);attach(d);}}catch(e){}});
+v.addEventListener("load",function(){try{var d=v.contentDocument;if(d){z=1;applySize();wrap.scrollLeft=0;wrap.scrollTop=0;keepInside(d);fitBox(d);attach(d);setTimeout(function(){fitBox(d);},400);setTimeout(function(){fitBox(d);},1500);}}catch(e){}});
 applySize();
 v.src=encodeURIComponent(f).replace(/%28/g,"(").replace(/%29/g,")");
 })();

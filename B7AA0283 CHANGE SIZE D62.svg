@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0.000000 0.000000 1189.000000 841.000000" stroke-linejoin="round" stroke-linecap="round" fill="none" fill-rule="evenodd"><desc>Composer Export</desc><script type="text/ecmascript"><![CDATA[
+if(typeof(top) != "undefined")
+{
+	top.ShowPaper = ShowPaper;
+}
+function ShowHotSpot(evt,hotspotid)
+{
+	var svgDocument = evt.target.ownerDocument;
+	var strId = "hotspot."+hotspotid;
+	var hotspot = svgDocument.getElementById(strId);
+	if(hotspot)
+		hotspot.setAttribute("opacity",".5");
+}
+function HideHotSpot(evt,hotspotid)
+{
+	var svgDocument = evt.target.ownerDocument;
+	var strId = "hotspot."+hotspotid;
+	var hotspot = svgDocument.getElementById(strId);
+	if(hotspot)
+		hotspot.setAttribute("opacity","0");
+
+	var toolTip = svgDocument.getElementById('ToolTip');
+	if(toolTip)
+		toolTip.setAttribute("visibility","hidden");
+}
+function ShowToolTip(evt,hotspotid,strTooltip)
+{
+	if(strTooltip=="")
+	return;
+
+	// change text
+	var svgDocument = evt.target.ownerDocument;
+	var tiptext = svgDocument.getElementById('ToolTipText');
+	if( !tiptext )
+	return;
+	tiptext.firstChild.nodeValue = " " + strTooltip + "  " ;
+
+	// show tooltip before, else some refresh issue
+
+	var toolTip = svgDocument.getElementById('ToolTip');
+	if(!toolTip)
+	return;
+
+	toolTip.setAttribute("visibility","visible");
+	toolTip.setAttribute("opacity",".95");
+
+	// move tooltip
+	// get viewbox
+
+	var root = svgDocument.documentElement;
+	var vbox = (root.getAttribute("viewBox")).split(' ');
+	var x0 = parseFloat(vbox[0]);
+	var y0 = parseFloat(vbox[1]);
+	var vboxW = parseFloat(vbox[2]);
+	var vboxH = parseFloat(vbox[3]);
+
+	// get default width of svg
+
+	var strW = root.getAttribute("width");
+	var svgW = parseFloat(strW);
+	if(strW.indexOf('mm') != -1)
+	svgW *= 3.779;
+
+	var strH = root.getAttribute("height");
+	var svgH = parseFloat(strH);
+	if(strH.indexOf('mm') != -1)
+	svgH *= 3.779;  	// 96 dpi  -> 96/25.4 = 3.779
+
+	// update the viewbox / width / height if svg is embedded in html with zoom fit all
+	var realx0 = x0;
+	var realy0 = y0;
+	var realvboxW = vboxW;
+	var realvboxH = vboxH;
+	var realsvgW = svgW;
+	var realsvgH = svgH;
+
+	if ((typeof(top) == "undefined") || (typeof(top.svgctl1) != "undefined")) // embedded in html
+	{
+		// get window size in pxl
+
+		svgW = window.innerWidth;
+		svgH = window.innerHeight;
+
+		// calculate real viewbox
+
+		realsvgW = svgW;
+		realsvgH = svgH;
+		if((svgW / svgH) > (vboxW / vboxH))
+		{
+			realvboxW = (vboxH * svgW) / svgH;
+			realvboxH = vboxH;
+			realx0 = x0 - (realvboxW - vboxW)/2 ;
+		}
+		else
+		{
+			realvboxH = (vboxW * svgH) / svgW;
+			realvboxW = vboxW;
+			realy0 = y0 - (realvboxH - vboxH)/2 ;
+		}
+	}
+
+	// get user zoom/pan
+
+	var newScale = root.currentScale;
+	var translation = root.currentTranslate;
+
+	// transform pxl to user unit
+
+	var xPos = (((evt.clientX+10- translation.x)/newScale) * realvboxW)/realsvgW  + realx0 ;
+	var yPos = (((evt.clientY+5- translation.y)/newScale) * realvboxH)/ realsvgH  + realy0 ;
+	var scaleForWidth = ( (1 / newScale) * realvboxH) / realsvgH;
+
+	// move tooltip
+
+	toolTip.setAttribute("transform", "translate(" + xPos + "," + yPos + ")" );
+
+	// resize tooltip
+
+	var fontsize = 12;
+	tiptext.setAttribute("font-size",fontsize*scaleForWidth);
+	tiptext.setAttribute("y", fontsize*scaleForWidth);
+	var tipBG = svgDocument.getElementById('ToolTipBG');
+	var outline = tiptext.getBBox();
+	if(tipBG)
+	{
+		tipBG.setAttribute("stroke-width", 1*scaleForWidth);
+		tipBG.setAttribute("width", Number(outline.width) );
+		tipBG.setAttribute("height", Number(outline.height) + fontsize*.5*scaleForWidth );
+	}
+	var ToolTipShadow = svgDocument.getElementById('ToolTipShadow');
+	if(ToolTipShadow)
+	{
+		ToolTipShadow.setAttribute("width", Number(outline.width) );
+		ToolTipShadow.setAttribute("height", Number(outline.height) + fontsize*.5*scaleForWidth );
+		ToolTipShadow.setAttribute("x", 3*scaleForWidth);
+		ToolTipShadow.setAttribute("y", 3*scaleForWidth);
+	}
+}
+function ShowPaper()
+{
+  var svgDocument = getDocument();
+  var paper = svgDocument.getElementById("paperID");
+  if(paper)
+  {
+    paper.setAttribute("transform","scale(1)");
+    paper.setAttribute("opacity","1");
+    paper.setAttribute("visibility","visible");
+  }
+  var svg = svgDocument.getRootElement();
+  if(svg)
+  {
+    svg.setAttribute("width","1199.000mm");
+    svg.setAttribute("height","851.000mm");
+    svg.setAttribute("viewBox","-5.000000 -5.000000 1199.000000 851.000000");
+  }
+}
+]]></script><defs/><g><g><g/><g><path style="fill:#ffff00" d="M374.98,628.05L912.78,628.05L912.78,597.01L374.98,597.01z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M374.98,628.05L912.78,628.05L912.78,597.01L374.98,597.01z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="378.86" y="619.32" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0088-REPITCH FRONT EARS D62 FORMAT CHANGE</text></g></g><g><g/><g><path style="fill:#ffff00" d="M374.98,695.62L662.83,695.62L662.83,664.58L374.98,664.58z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M374.98,695.62L662.83,695.62L662.83,664.58L374.98,664.58z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="378.86" y="686.89" font-size="18.99" opacity="1.00" font-family="MS Shell Dlg">CGIG0043-EARS SUPPORT KIT</text></g></g><g><g/><g><path style="fill:#ffff00" d="M374.98,729.93L674.83,729.93L674.83,698.89L374.98,698.89z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M374.98,729.93L674.83,729.93L674.83,698.89L374.98,698.89z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="378.86" y="721.20" font-size="18.95" opacity="1.00" font-family="MS Shell Dlg">DGKM0059-KIT CUFFS FOLDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M372.93,529.83L945.60,529.83L945.60,498.79L372.93,498.79z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M372.93,529.83L945.60,529.83L945.60,498.79L372.93,498.79z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="376.81" y="521.10" font-size="19.02" opacity="1.00" font-family="MS Shell Dlg">CWAG0085-FORMAT CHANGE ACCORDING TO ROTATOR D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M370.88,434.68L859.46,434.68L859.46,403.64L370.88,403.64z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M370.88,434.68L859.46,434.68L859.46,403.64L370.88,403.64z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="374.76" y="425.95" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0076-WELDING REINFORCEMENT BACK EARS</text></g></g><g><g/><g><path style="fill:#a6caf0" d="M349.62,39.96L671.59,39.96L671.59,3.28L349.62,3.28z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M349.62,39.96L671.59,39.96L671.59,3.28L349.62,3.28z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="354.21" y="29.64" font-size="22.39" opacity="1.00" font-family="MS Shell Dlg">B7AA0283-CHANGE SIZE D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M369.86,274.05L827.96,274.05L827.96,243.01L369.86,243.01z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M369.86,274.05L827.96,274.05L827.96,243.01L369.86,243.01z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="373.74" y="265.32" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0071-CHANNEL PRESS/BUFFER CONTOUR</text></g></g><g><g/><g><path style="fill:#ffff00" d="M369.86,306.79L669.52,306.79L669.52,275.75L369.86,275.75z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M369.86,306.79L669.52,306.79L669.52,275.75L369.86,275.75z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="373.74" y="298.06" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CWAG0072-CHANNEL WELDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M371.91,369.20L777.78,369.20L777.78,338.16L371.91,338.16z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M371.91,369.20L777.78,369.20L777.78,338.16L371.91,338.16z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="375.79" y="360.47" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0074-TAPE WELDING ON BACK EARS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M373.95,595.31L937.10,595.31L937.10,564.27L373.95,564.27z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M373.95,595.31L937.10,595.31L937.10,564.27L373.95,564.27z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="377.83" y="586.58" font-size="19.02" opacity="1.00" font-family="MS Shell Dlg">CWAG0087-FORMAT CHANGE ACCORDING TO REPITCH D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M373.94,798.01L524.06,798.01L524.06,766.97L373.94,766.97z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M373.94,798.01L524.06,798.01L524.06,766.97L373.94,766.97z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="377.82" y="789.28" font-size="18.84" opacity="1.00" font-family="MS Shell Dlg">EEDH0690-CAM</text></g></g><g><g/><g><path style="fill:#ffff00" d="M374.98,830.75L624.34,830.75L624.34,799.71L374.98,799.71z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M374.98,830.75L624.34,830.75L624.34,799.71L374.98,799.71z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="378.86" y="822.02" font-size="18.93" opacity="1.00" font-family="MS Shell Dlg">EEDH0931-CAM SV.516mm</text></g></g><g><g/><g><path style="fill:#ffff00" d="M372.98,499.14L852.82,499.14L852.82,468.10L372.98,468.10z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M372.98,499.14L852.82,499.14L852.82,468.10L372.98,468.10z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="376.86" y="490.41" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0084-FIRST ROTATOR FORMAT CHANGE D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M372.93,562.57L843.25,562.57L843.25,531.53L372.93,531.53z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M372.93,562.57L843.25,562.57L843.25,531.53L372.93,531.53z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="376.81" y="553.84" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0086-FORMAT CHANGE FIRST REPITCH D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M371.91,401.94L712.59,401.94L712.59,370.90L371.91,370.90z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M371.91,401.94L712.59,401.94L712.59,370.90L371.91,370.90z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="375.79" y="393.21" font-size="18.99" opacity="1.00" font-family="MS Shell Dlg">CWAG0075-FOLDED TAPE WELDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M374.98,662.35L868.33,662.35L868.33,631.32L374.98,631.32z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M374.98,662.35L868.33,662.35L868.33,631.32L374.98,631.32z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="378.86" y="653.63" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0130-TISSUE PRESS ON DRUM FORMING UNIT</text></g></g><g><g/><g><path style="fill:#ffff00" d="M370.88,466.40L846.95,466.40L846.95,435.36L370.88,435.36z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M370.88,466.40L846.95,466.40L846.95,435.36L370.88,435.36z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="374.76" y="457.67" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0077-CHANNEL PRESS/PRODUCT CONTOUR</text></g></g><g><g/><g><path style="fill:#ffff00" d="M370.88,337.49L614.52,337.49L614.52,306.45L370.88,306.45z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M370.88,337.49L614.52,337.49L614.52,306.45L370.88,306.45z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="374.76" y="328.76" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0073-TIMED PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M367.82,211.64L611.46,211.64L611.46,180.60L367.82,180.60z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M367.82,211.64L611.46,211.64L611.46,180.60L367.82,180.60z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="371.70" y="202.91" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0064-TIMED PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M368.84,241.31L640.97,241.31L640.97,210.27L368.84,210.27z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M368.84,241.31L640.97,241.31L640.97,210.27L368.84,210.27z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="372.72" y="232.58" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CWAG0069-WELDING CUFFS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M366.79,147.19L694.75,147.19L694.75,116.15L366.79,116.15z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M366.79,147.19L694.75,147.19L694.75,116.15L366.79,116.15z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="370.67" y="138.46" font-size="18.99" opacity="1.00" font-family="MS Shell Dlg">CWAG0057-CUFFS FOLD WELDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M365.79,114.97L785.11,114.97L785.11,83.93L365.79,83.93z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M365.79,114.97L785.11,114.97L785.11,83.93L365.79,83.93z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="369.67" y="106.24" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CQMG0033-INSERTI CORE FORMING - SIZE 4</text></g></g><g><g/><g><path style="fill:#ffff00" d="M367.82,179.93L598.75,179.93L598.75,148.89L367.82,148.89z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M367.82,179.93L598.75,179.93L598.75,148.89L367.82,148.89z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="371.70" y="171.20" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0062-FLAT PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M366.81,82.23L652.47,82.23L652.47,51.20L366.81,51.20z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M366.81,82.23L652.47,82.23L652.47,51.20L366.81,51.20z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="370.69" y="73.50" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CEQG0009-CUTTING UNIT D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M373.06,765.19L790.76,765.19L790.76,734.15L373.06,734.15z"/><path style="stroke:#000000;stroke-width:0.250;stroke-opacity:0.98" d="M373.06,765.19L790.76,765.19L790.76,734.15L373.06,734.15z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="376.94" y="756.46" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">DQKJ0021-CORE FORMING INSERTS - SIZE 4</text></g></g><g/><g/><g id="paperID" visibility="hidden" opacity="0.00" transform="scale(0.000100)"><path style="stroke:#000000;stroke-width:0.500;fill:#e6e6e6;fill-rule:evenodd" d="M-2000.00,-2000.00L3189.00,-2000.00L3189.00,2841.00L-2000.00,2841.00zM0.00,0.00L1189.00,0.00L1189.00,841.00L0.00,841.00z"/><path style="fill:#000000;fill-opacity:0.118" d="M3.00,841.00L1189.00,841.00L1189.00,3.00L1192.00,3.00L1192.00,844.00L3.00,844.00z"/></g><g id="hotspot.0" ident="" onmouseover="ShowHotSpot(evt,&apos;0&apos;)" onmouseout="HideHotSpot(evt,&apos;0&apos;)" onmousemove="ShowToolTip(evt,&apos;0&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0064.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M358.34,210.72L339.20,210.72L339.20,191.59L358.34,191.59zM610.95,211.76L367.27,211.76L367.27,180.15L610.95,180.15z"/></a></g><g id="hotspot.1" ident="" onmouseover="ShowHotSpot(evt,&apos;1&apos;)" onmouseout="HideHotSpot(evt,&apos;1&apos;)" onmousemove="ShowToolTip(evt,&apos;1&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0069.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M359.38,240.87L340.24,240.87L340.24,221.73L359.38,221.73zM640.77,241.58L368.31,241.91L368.31,210.30L641.10,210.30zM342.72,239.37L341.39,239.72L341.74,238.39zM358.23,239.72L356.90,239.37L358.43,238.53z"/></a></g><g id="hotspot.2" ident="" onmouseover="ShowHotSpot(evt,&apos;2&apos;)" onmouseout="HideHotSpot(evt,&apos;2&apos;)" onmousemove="ShowToolTip(evt,&apos;2&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0085.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M945.77,499.21L945.69,529.87L372.47,529.87L372.47,498.25L944.73,498.17zM363.54,528.83L344.40,528.83L344.40,509.69L363.54,509.69z"/></a></g><g id="hotspot.3" ident="" onmouseover="ShowHotSpot(evt,&apos;3&apos;)" onmouseout="HideHotSpot(evt,&apos;3&apos;)" onmousemove="ShowToolTip(evt,&apos;3&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0076.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M361.46,434.23L342.32,434.23L342.32,415.09L361.46,415.09zM859.40,435.27L370.39,435.27L370.39,403.65L859.40,403.65zM344.80,432.73L343.47,433.08L343.82,431.74zM360.31,433.08L358.97,432.73L360.51,431.89z"/></a></g><g id="hotspot.4" ident="" onmouseover="ShowHotSpot(evt,&apos;4&apos;)" onmouseout="HideHotSpot(evt,&apos;4&apos;)" onmousemove="ShowToolTip(evt,&apos;4&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0088.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M365.60,626.52L364.88,626.85L364.62,625.20L363.06,626.02L364.88,626.85L364.56,627.56L346.48,627.58L346.48,608.45L365.62,608.45zM912.42,628.62L374.55,628.62L374.55,597.01L912.42,597.01zM364.88,626.85L363.06,626.02L364.62,625.20z"/></a></g><g id="hotspot.5" ident="" onmouseover="ShowHotSpot(evt,&apos;5&apos;)" onmouseout="HideHotSpot(evt,&apos;5&apos;)" onmousemove="ShowToolTip(evt,&apos;5&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CEQG0009.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M357.30,81.82L338.16,81.82L338.16,62.68L357.30,62.68zM652.20,82.53L366.23,82.86L366.23,51.25L652.53,51.25zM341.68,80.45L339.23,80.64L339.54,79.32zM356.23,80.64L353.78,80.45L356.49,79.50z"/></a></g><g id="hotspot.6" ident="" onmouseover="ShowHotSpot(evt,&apos;6&apos;)" onmouseout="HideHotSpot(evt,&apos;6&apos;)" onmousemove="ShowToolTip(evt,&apos;6&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0071.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M828.30,243.48L828.22,274.13L369.35,274.13L369.35,242.52L827.26,242.44zM360.42,273.10L341.28,273.10L341.28,253.96L360.42,253.96z"/></a></g><g id="hotspot.7" ident="" onmouseover="ShowHotSpot(evt,&apos;7&apos;)" onmouseout="HideHotSpot(evt,&apos;7&apos;)" onmousemove="ShowToolTip(evt,&apos;7&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0072.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M360.40,305.30L359.68,305.62L359.43,303.98L357.87,304.79L359.68,305.62L359.36,306.34L341.28,306.36L341.28,287.22L360.42,287.22zM669.17,307.40L369.35,307.40L369.35,275.79L669.17,275.79zM343.76,304.86L342.43,305.21L342.78,303.88zM359.68,305.62L357.87,304.79L359.43,303.98z"/></a></g><g id="hotspot.8" ident="" onmouseover="ShowHotSpot(evt,&apos;8&apos;)" onmouseout="HideHotSpot(evt,&apos;8&apos;)" onmousemove="ShowToolTip(evt,&apos;8&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0074.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M362.50,368.73L343.36,368.73L343.36,349.60L362.50,349.60zM777.28,369.77L371.43,369.77L371.43,338.16L777.28,338.16zM361.35,367.59L360.01,367.24L361.55,366.40z"/></a></g><g id="hotspot.9" ident="" onmouseover="ShowHotSpot(evt,&apos;9&apos;)" onmouseout="HideHotSpot(evt,&apos;9&apos;)" onmousemove="ShowToolTip(evt,&apos;9&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="DQKJ0021.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M363.54,764.80L344.40,764.80L344.40,745.67L363.54,745.67zM790.46,765.51L372.47,765.84L372.47,734.23L790.79,734.23zM347.92,763.44L345.47,763.63L345.78,762.31zM362.47,763.63L360.02,763.44L362.73,762.49z"/></a></g><g id="hotspot.10" ident="" onmouseover="ShowHotSpot(evt,&apos;10&apos;)" onmouseout="HideHotSpot(evt,&apos;10&apos;)" onmousemove="ShowToolTip(evt,&apos;10&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0087.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M937.46,564.70L937.37,595.36L373.51,595.36L373.51,563.75L936.42,563.66zM364.58,594.32L345.44,594.32L345.44,575.18L364.58,575.18z"/></a></g><g id="hotspot.11" ident="" onmouseover="ShowHotSpot(evt,&apos;11&apos;)" onmouseout="HideHotSpot(evt,&apos;11&apos;)" onmousemove="ShowToolTip(evt,&apos;11&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="EEDH0690.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M364.58,797.03L345.44,797.03L345.44,777.89L364.58,777.89zM523.63,798.07L373.51,798.07L373.51,766.46L523.63,766.46z"/></a></g><g id="hotspot.12" ident="" onmouseover="ShowHotSpot(evt,&apos;12&apos;)" onmouseout="HideHotSpot(evt,&apos;12&apos;)" onmousemove="ShowToolTip(evt,&apos;12&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="EEDH0931.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M365.60,829.24L364.88,829.56L364.62,827.91L363.06,828.73L364.88,829.56L364.56,830.28L346.48,830.30L346.48,811.16L365.62,811.16zM624.14,831.01L374.55,831.34L374.55,799.73L624.46,799.73zM364.88,829.56L363.06,828.73L364.62,827.91z"/></a></g><g id="hotspot.13" ident="" onmouseover="ShowHotSpot(evt,&apos;13&apos;)" onmouseout="HideHotSpot(evt,&apos;13&apos;)" onmousemove="ShowToolTip(evt,&apos;13&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0057.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M357.30,146.27L338.16,146.27L338.16,127.13L357.30,127.13zM694.12,147.31L366.23,147.31L366.23,115.70L694.12,115.70z"/></a></g><g id="hotspot.14" ident="" onmouseover="ShowHotSpot(evt,&apos;14&apos;)" onmouseout="HideHotSpot(evt,&apos;14&apos;)" onmousemove="ShowToolTip(evt,&apos;14&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0084.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M363.54,498.68L344.40,498.68L344.40,479.54L363.54,479.54zM852.84,499.39L372.47,499.72L372.47,468.11L853.17,468.11zM362.39,497.53L361.05,497.18L362.59,496.34z"/></a></g><g id="hotspot.15" ident="" onmouseover="ShowHotSpot(evt,&apos;15&apos;)" onmouseout="HideHotSpot(evt,&apos;15&apos;)" onmousemove="ShowToolTip(evt,&apos;15&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0086.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M363.52,561.03L362.80,561.35L362.55,559.71L360.98,560.52L362.80,561.35L362.48,562.07L344.40,562.09L344.40,542.96L363.54,542.96zM842.77,563.13L372.47,563.13L372.47,531.52L842.77,531.52zM362.80,561.35L360.98,560.52L362.55,559.71z"/></a></g><g id="hotspot.16" ident="" onmouseover="ShowHotSpot(evt,&apos;16&apos;)" onmouseout="HideHotSpot(evt,&apos;16&apos;)" onmousemove="ShowToolTip(evt,&apos;16&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0075.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M712.91,371.34L712.83,402.00L371.43,402.00L371.43,370.39L711.87,370.30zM362.50,400.96L343.36,400.96L343.36,381.82L362.50,381.82z"/></a></g><g id="hotspot.17" ident="" onmouseover="ShowHotSpot(evt,&apos;17&apos;)" onmouseout="HideHotSpot(evt,&apos;17&apos;)" onmousemove="ShowToolTip(evt,&apos;17&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="DWAG0213.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M365.29,661.56L346.48,661.89L346.48,642.75L365.62,642.75zM867.72,662.93L374.55,662.93L374.55,631.32L867.72,631.32zM349.30,644.43L347.85,648.39L347.65,643.64zM348.95,660.81L347.55,660.81L347.55,659.42L348.95,659.42z"/></a></g><g id="hotspot.18" ident="" onmouseover="ShowHotSpot(evt,&apos;18&apos;)" onmouseout="HideHotSpot(evt,&apos;18&apos;)" onmousemove="ShowToolTip(evt,&apos;18&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CGIG0043.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M365.29,694.83L346.48,695.15L346.48,676.02L365.62,676.02zM662.60,695.86L374.55,696.19L374.55,664.58L662.93,664.58zM349.30,677.69L347.85,681.65L347.65,676.91zM348.95,694.08L347.55,694.08L347.55,692.69L348.95,692.69z"/></a></g><g id="hotspot.19" ident="" onmouseover="ShowHotSpot(evt,&apos;19&apos;)" onmouseout="HideHotSpot(evt,&apos;19&apos;)" onmousemove="ShowToolTip(evt,&apos;19&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CQMG0033.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M356.26,114.04L337.12,114.04L337.12,94.91L356.26,94.91zM784.56,115.08L365.19,115.08L365.19,83.47L784.56,83.47z"/></a></g><g id="hotspot.20" ident="" onmouseover="ShowHotSpot(evt,&apos;20&apos;)" onmouseout="HideHotSpot(evt,&apos;20&apos;)" onmousemove="ShowToolTip(evt,&apos;20&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="DGKM0059.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M365.29,729.13L346.48,729.46L346.48,710.32L365.62,710.32zM674.36,730.50L374.55,730.50L374.55,698.89L674.36,698.89zM349.30,712.00L347.85,715.96L347.65,711.21zM348.95,728.38L347.55,728.38L347.55,726.99L348.95,726.99z"/></a></g><g id="hotspot.21" ident="" onmouseover="ShowHotSpot(evt,&apos;21&apos;)" onmouseout="HideHotSpot(evt,&apos;21&apos;)" onmousemove="ShowToolTip(evt,&apos;21&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0077.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M361.46,465.41L342.32,465.41L342.32,446.28L361.46,446.28zM846.93,466.45L370.39,466.45L370.39,434.84L846.93,434.84z"/></a></g><g id="hotspot.22" ident="" onmouseover="ShowHotSpot(evt,&apos;22&apos;)" onmouseout="HideHotSpot(evt,&apos;22&apos;)" onmousemove="ShowToolTip(evt,&apos;22&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0062.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M358.38,178.44L357.68,178.77L357.48,177.21L353.75,178.19L357.68,178.77L357.34,179.48L339.20,179.54L339.20,160.40L358.34,160.40zM598.48,180.58L367.27,180.58L367.27,148.96L598.48,148.96zM342.72,178.17L340.27,178.36L340.58,177.04zM357.68,178.77L353.75,178.19L357.48,177.21z"/></a></g><g id="hotspot.23" ident="" onmouseover="ShowHotSpot(evt,&apos;23&apos;)" onmouseout="HideHotSpot(evt,&apos;23&apos;)" onmousemove="ShowToolTip(evt,&apos;23&apos;,&quot;Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0073.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M361.46,336.51L342.32,336.51L342.32,317.37L361.46,317.37zM614.07,337.55L370.39,337.55L370.39,305.94L614.07,305.94z"/></a></g><g id="ToolTip" visibility="hidden" opacity="0" transform="translate(0,0)"><rect id="ToolTipShadow" opacity="0.20" fill="black" stroke="none" x="0" y="0" width="30" height="8"/><rect id="ToolTipBG" fill="#ffffe1" stroke="black" x="0" y="0" width="30" height="8"/><text xml:space="preserve" id="ToolTipText" fill="black" x="0" y="0" width="30" height="8">tooltip</text></g></g></svg>

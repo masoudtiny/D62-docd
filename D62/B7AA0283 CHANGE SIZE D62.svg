@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0.000000 0.000000 1189.000000 841.000000" stroke-linejoin="round" stroke-linecap="round" fill="none" fill-rule="evenodd"><desc>Composer Export</desc><script type="text/ecmascript"><![CDATA[
+if(typeof(top) != "undefined")
+{
+	top.ShowPaper = ShowPaper;
+}
+function ShowHotSpot(evt,hotspotid)
+{
+	var svgDocument = evt.target.ownerDocument;
+	var strId = "hotspot."+hotspotid;
+	var hotspot = svgDocument.getElementById(strId);
+	if(hotspot)
+		hotspot.setAttribute("opacity",".5");
+}
+function HideHotSpot(evt,hotspotid)
+{
+	var svgDocument = evt.target.ownerDocument;
+	var strId = "hotspot."+hotspotid;
+	var hotspot = svgDocument.getElementById(strId);
+	if(hotspot)
+		hotspot.setAttribute("opacity","0");
+
+	var toolTip = svgDocument.getElementById('ToolTip');
+	if(toolTip)
+		toolTip.setAttribute("visibility","hidden");
+}
+function ShowToolTip(evt,hotspotid,strTooltip)
+{
+	if(strTooltip=="")
+	return;
+
+	// change text
+	var svgDocument = evt.target.ownerDocument;
+	var tiptext = svgDocument.getElementById('ToolTipText');
+	if( !tiptext )
+	return;
+	tiptext.firstChild.nodeValue = " " + strTooltip + "  " ;
+
+	// show tooltip before, else some refresh issue
+
+	var toolTip = svgDocument.getElementById('ToolTip');
+	if(!toolTip)
+	return;
+
+	toolTip.setAttribute("visibility","visible");
+	toolTip.setAttribute("opacity",".95");
+
+	// move tooltip
+	// get viewbox
+
+	var root = svgDocument.documentElement;
+	var vbox = (root.getAttribute("viewBox")).split(' ');
+	var x0 = parseFloat(vbox[0]);
+	var y0 = parseFloat(vbox[1]);
+	var vboxW = parseFloat(vbox[2]);
+	var vboxH = parseFloat(vbox[3]);
+
+	// get default width of svg
+
+	var strW = root.getAttribute("width");
+	var svgW = parseFloat(strW);
+	if(strW.indexOf('mm') != -1)
+	svgW *= 3.779;
+
+	var strH = root.getAttribute("height");
+	var svgH = parseFloat(strH);
+	if(strH.indexOf('mm') != -1)
+	svgH *= 3.779;  	// 96 dpi  -> 96/25.4 = 3.779
+
+	// update the viewbox / width / height if svg is embedded in html with zoom fit all
+	var realx0 = x0;
+	var realy0 = y0;
+	var realvboxW = vboxW;
+	var realvboxH = vboxH;
+	var realsvgW = svgW;
+	var realsvgH = svgH;
+
+	if ((typeof(top) == "undefined") || (typeof(top.svgctl1) != "undefined")) // embedded in html
+	{
+		// get window size in pxl
+
+		svgW = window.innerWidth;
+		svgH = window.innerHeight;
+
+		// calculate real viewbox
+
+		realsvgW = svgW;
+		realsvgH = svgH;
+		if((svgW / svgH) > (vboxW / vboxH))
+		{
+			realvboxW = (vboxH * svgW) / svgH;
+			realvboxH = vboxH;
+			realx0 = x0 - (realvboxW - vboxW)/2 ;
+		}
+		else
+		{
+			realvboxH = (vboxW * svgH) / svgW;
+			realvboxW = vboxW;
+			realy0 = y0 - (realvboxH - vboxH)/2 ;
+		}
+	}
+
+	// get user zoom/pan
+
+	var newScale = root.currentScale;
+	var translation = root.currentTranslate;
+
+	// transform pxl to user unit
+
+	var xPos = (((evt.clientX+10- translation.x)/newScale) * realvboxW)/realsvgW  + realx0 ;
+	var yPos = (((evt.clientY+5- translation.y)/newScale) * realvboxH)/ realsvgH  + realy0 ;
+	var scaleForWidth = ( (1 / newScale) * realvboxH) / realsvgH;
+
+	// move tooltip
+
+	toolTip.setAttribute("transform", "translate(" + xPos + "," + yPos + ")" );
+
+	// resize tooltip
+
+	var fontsize = 12;
+	tiptext.setAttribute("font-size",fontsize*scaleForWidth);
+	tiptext.setAttribute("y", fontsize*scaleForWidth);
+	var tipBG = svgDocument.getElementById('ToolTipBG');
+	var outline = tiptext.getBBox();
+	if(tipBG)
+	{
+		tipBG.setAttribute("stroke-width", 1*scaleForWidth);
+		tipBG.setAttribute("width", Number(outline.width) );
+		tipBG.setAttribute("height", Number(outline.height) + fontsize*.5*scaleForWidth );
+	}
+	var ToolTipShadow = svgDocument.getElementById('ToolTipShadow');
+	if(ToolTipShadow)
+	{
+		ToolTipShadow.setAttribute("width", Number(outline.width) );
+		ToolTipShadow.setAttribute("height", Number(outline.height) + fontsize*.5*scaleForWidth );
+		ToolTipShadow.setAttribute("x", 3*scaleForWidth);
+		ToolTipShadow.setAttribute("y", 3*scaleForWidth);
+	}
+}
+function ShowPaper()
+{
+  var svgDocument = getDocument();
+  var paper = svgDocument.getElementById("paperID");
+  if(paper)
+  {
+    paper.setAttribute("transform","scale(1)");
+    paper.setAttribute("opacity","1");
+    paper.setAttribute("visibility","visible");
+  }
+  var svg = svgDocument.getRootElement();
+  if(svg)
+  {
+    svg.setAttribute("width","1199.000mm");
+    svg.setAttribute("height","851.000mm");
+    svg.setAttribute("viewBox","-5.000000 -5.000000 1199.000000 851.000000");
+  }
+}
+]]></script><defs/><g><g><g/><g><path style="fill:#ffff00" d="M301.22,443.52L641.94,443.52L641.94,412.48L301.22,412.48z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M301.22,443.52L641.94,443.52L641.94,412.48L301.22,412.48z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="305.10" y="434.79" font-size="18.99" opacity="1.00" font-family="MS Shell Dlg">CWAG0075-FOLDED TAPE WELDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M300.20,476.26L788.74,476.26L788.74,445.23L300.20,445.23z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M300.20,476.26L788.74,476.26L788.74,445.23L300.20,445.23z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="304.07" y="467.53" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0076-WELDING REINFORCEMENT BACK EARS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M304.29,669.63L842.10,669.63L842.10,638.59L304.29,638.59z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M304.29,669.63L842.10,669.63L842.10,638.59L304.29,638.59z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="308.17" y="660.90" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0088-REPITCH FRONT EARS D62 FORMAT CHANGE</text></g></g><g><g/><g><path style="fill:#ffff00" d="M301.22,410.78L707.09,410.78L707.09,379.75L301.22,379.75z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M301.22,410.78L707.09,410.78L707.09,379.75L301.22,379.75z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="305.10" y="402.05" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0074-TAPE WELDING ON BACK EARS</text></g></g><g><g/><g><path style="fill:#a6caf0" d="M349.62,39.96L671.59,39.96L671.59,3.28L349.62,3.28z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M349.62,39.96L671.59,39.96L671.59,3.28L349.62,3.28z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="354.21" y="29.64" font-size="22.39" opacity="1.00" font-family="MS Shell Dlg">B7AA0283-CHANGE SIZE D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M299.17,315.63L757.27,315.63L757.27,284.60L299.17,284.60z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M299.17,315.63L757.27,315.63L757.27,284.60L299.17,284.60z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="303.05" y="306.90" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0071-CHANNEL PRESS/BUFFER CONTOUR</text></g></g><g><g/><g><path style="fill:#ffff00" d="M299.17,348.37L598.83,348.37L598.83,317.34L299.17,317.34z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M299.17,348.37L598.83,348.37L598.83,317.34L299.17,317.34z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="303.05" y="339.64" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CWAG0072-CHANNEL WELDING</text></g></g><g><g/><g><path style="fill:#ffff00" d="M300.20,379.07L543.81,379.07L543.81,348.03L300.20,348.03z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M300.20,379.07L543.81,379.07L543.81,348.03L300.20,348.03z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="304.07" y="370.34" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0073-TIMED PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M302.24,571.41L874.92,571.41L874.92,540.37L302.24,540.37z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M302.24,571.41L874.92,571.41L874.92,540.37L302.24,540.37z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="306.12" y="562.68" font-size="19.02" opacity="1.00" font-family="MS Shell Dlg">CWAG0085-FORMAT CHANGE ACCORDING TO ROTATOR D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M303.26,636.89L866.38,636.89L866.38,605.86L303.26,605.86z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M303.26,636.89L866.38,636.89L866.38,605.86L303.26,605.86z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="307.14" y="628.16" font-size="19.02" opacity="1.00" font-family="MS Shell Dlg">CWAG0087-FORMAT CHANGE ACCORDING TO REPITCH D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M299.17,540.72L779.00,540.72L779.00,509.68L299.17,509.68z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M299.17,540.72L779.00,540.72L779.00,509.68L299.17,509.68z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="303.05" y="531.99" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0084-FIRST ROTATOR FORMAT CHANGE D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M302.24,604.15L772.58,604.15L772.58,573.11L302.24,573.11z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M302.24,604.15L772.58,604.15L772.58,573.11L302.24,573.11z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="306.12" y="595.42" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0086-FORMAT CHANGE FIRST REPITCH D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M304.29,702.37L454.41,702.37L454.41,671.33L304.29,671.33z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M304.29,702.37L454.41,702.37L454.41,671.33L304.29,671.33z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="308.17" y="693.64" font-size="18.84" opacity="1.00" font-family="MS Shell Dlg">EEDH0690-CAM</text></g></g><g><g/><g><path style="fill:#ffff00" d="M304.29,735.11L553.65,735.11L553.65,704.07L304.29,704.07z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M304.29,735.11L553.65,735.11L553.65,704.07L304.29,704.07z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="308.17" y="726.38" font-size="18.93" opacity="1.00" font-family="MS Shell Dlg">EEDH0931-CAM SV.516mm</text></g></g><g><g/><g><path style="fill:#ffff00" d="M300.19,507.98L776.27,507.98L776.27,476.94L300.19,476.94z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M300.19,507.98L776.27,507.98L776.27,476.94L300.19,476.94z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="304.07" y="499.25" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CWAG0077-CHANNEL PRESS/PRODUCT CONTOUR</text></g></g><g><g/><g><path style="fill:#ffff00" d="M295.08,90.55L580.73,90.55L580.73,59.51L295.08,59.51z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M295.08,90.55L580.73,90.55L580.73,59.51L295.08,59.51z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="298.96" y="81.82" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CEQG0009-CUTTING UNIT D62</text></g></g><g><g/><g><path style="fill:#ffff00" d="M294.06,123.29L713.39,123.29L713.39,92.25L294.06,92.25z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M294.06,123.29L713.39,123.29L713.39,92.25L294.06,92.25z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="297.94" y="114.56" font-size="19.01" opacity="1.00" font-family="MS Shell Dlg">CQMG0033-INSERTI CORE FORMING - SIZE 4</text></g></g><g><g/><g><path style="fill:#ffff00" d="M297.13,221.51L528.06,221.51L528.06,190.47L297.13,190.47z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M297.13,221.51L528.06,221.51L528.06,190.47L297.13,190.47z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="301.01" y="212.78" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0062-FLAT PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M297.13,253.23L540.77,253.23L540.77,222.18L297.13,222.18z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M297.13,253.23L540.77,253.23L540.77,222.18L297.13,222.18z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="301.01" y="244.49" font-size="18.97" opacity="1.00" font-family="MS Shell Dlg">CWAG0064-TIMED PRESS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M294.06,157.05L711.71,157.05L711.71,126.01L294.06,126.01z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M294.06,157.05L711.71,157.05L711.71,126.01L294.06,126.01z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="297.94" y="148.32" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">DQKJ0021-CORE FORMING INSERTS - SIZE 4</text></g></g><g><g/><g><path style="fill:#ffff00" d="M298.15,282.89L570.27,282.89L570.27,251.86L298.15,251.86z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M298.15,282.89L570.27,282.89L570.27,251.86L298.15,251.86z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="302.03" y="274.16" font-size="18.98" opacity="1.00" font-family="MS Shell Dlg">CWAG0069-WELDING CUFFS</text></g></g><g><g/><g><path style="fill:#ffff00" d="M296.10,188.77L624.09,188.77L624.09,157.73L296.10,157.73z"/><path style="stroke:#000000;stroke-width:0.500;stroke-opacity:0.98" d="M296.10,188.77L624.09,188.77L624.09,157.73L296.10,157.73z"/><text xml:space="preserve" fill="#000080" stroke-width="0" x="299.98" y="180.04" font-size="18.99" opacity="1.00" font-family="MS Shell Dlg">CWAG0057-CUFFS FOLD WELDING</text></g></g><g/><g/><g id="paperID" visibility="hidden" opacity="0.00" transform="scale(0.000100)"><path style="stroke:#000000;stroke-width:0.500;fill:#e6e6e6;fill-rule:evenodd" d="M-2000.00,-2000.00L3189.00,-2000.00L3189.00,2841.00L-2000.00,2841.00zM0.00,0.00L1189.00,0.00L1189.00,841.00L0.00,841.00z"/><path style="fill:#000000;fill-opacity:0.118" d="M3.00,841.00L1189.00,841.00L1189.00,3.00L1192.00,3.00L1192.00,844.00L3.00,844.00z"/></g><g id="hotspot.0" ident="" onmouseover="ShowHotSpot(evt,'0')" onmouseout="HideHotSpot(evt,'0')" onmousemove="ShowToolTip(evt,'0',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0075.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M642.35,417.63L641.94,448.66L300.84,448.66L300.84,417.02L641.33,416.61zM275.16,445.32L273.74,445.52L273.39,447.21L272.71,446.89L272.76,429.03L291.68,429.03L291.68,447.96L273.73,447.91L273.39,447.21L277.30,446.61zM277.30,446.61L273.39,447.21L273.74,445.52L275.16,445.32zM290.63,446.79L288.20,446.61L290.88,445.67z"/></a></g><g id="hotspot.1" ident="" onmouseover="ShowHotSpot(evt,'1')" onmouseout="HideHotSpot(evt,'1')" onmousemove="ShowToolTip(evt,'1',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0076.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M272.40,461.62L272.72,460.93L290.65,460.90L290.65,479.83L271.73,479.83L271.69,461.96L272.40,461.62L272.73,463.37L274.97,463.02L275.23,461.89zM788.26,480.85L299.49,480.85L299.81,449.92L788.26,449.59zM288.34,461.84L289.52,462.03L289.72,463.21L288.55,463.01zM274.97,463.02L272.73,463.37L272.40,461.62L275.23,461.89z"/></a></g><g id="hotspot.2" ident="" onmouseover="ShowHotSpot(evt,'2')" onmouseout="HideHotSpot(evt,'2')" onmousemove="ShowToolTip(evt,'2',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0088.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M276.47,654.93L276.82,654.23L294.77,654.19L294.77,673.11L275.84,673.11L275.79,655.26L276.47,654.93L276.82,656.63L279.11,656.43L280.38,655.19zM303.92,643.20L841.72,642.88L841.72,675.17L303.92,674.84zM291.35,655.09L293.71,655.35L293.97,656.47L292.59,656.47zM279.11,656.43L276.82,656.63L276.47,654.93L280.38,655.19z"/></a></g><g id="hotspot.3" ident="" onmouseover="ShowHotSpot(evt,'3')" onmouseout="HideHotSpot(evt,'3')" onmousemove="ShowToolTip(evt,'3',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0074.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M274.57,412.27L273.45,414.36L272.75,414.04L272.76,396.13L291.68,396.13L291.68,415.06L273.77,415.06L273.45,414.36L275.55,413.24zM707.04,416.08L300.51,416.08L300.51,384.82L707.04,384.82zM290.55,413.92L289.23,413.57L290.74,412.74zM275.55,413.24L273.45,414.36L274.57,412.27z"/></a></g><g id="hotspot.4" ident="" onmouseover="ShowHotSpot(evt,'4')" onmouseout="HideHotSpot(evt,'4')" onmousemove="ShowToolTip(evt,'4',&quot;Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CEQG0009.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M285.51,94.28L266.59,94.28L266.59,75.36L285.51,75.36zM580.58,95.31L294.35,95.31L294.35,64.05L580.58,64.05zM268.07,77.81L267.72,76.49L268.90,76.29zM269.04,92.80L267.72,93.15L268.07,91.83z"/></a></g><g id="hotspot.5" ident="" onmouseover="ShowHotSpot(evt,'5')" onmouseout="HideHotSpot(evt,'5')" onmousemove="ShowToolTip(evt,'5',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0071.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M289.63,319.44L270.70,319.44L270.70,300.51L289.63,300.51zM757.42,320.47L298.46,320.47L298.46,289.21L757.42,289.21zM272.18,302.97L271.83,301.65L273.01,301.45zM273.15,317.96L271.83,318.31L272.18,316.98z"/></a></g><g id="hotspot.6" ident="" onmouseover="ShowHotSpot(evt,'6')" onmouseout="HideHotSpot(evt,'6')" onmousemove="ShowToolTip(evt,'6',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0072.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M289.63,352.34L270.70,352.34L270.70,333.41L289.63,333.41zM599.09,353.37L298.46,353.37L298.46,322.10L599.09,322.10zM272.18,335.87L271.83,334.55L273.01,334.35zM273.15,350.86L271.83,351.21L272.18,349.88z"/></a></g><g id="hotspot.7" ident="" onmouseover="ShowHotSpot(evt,'7')" onmouseout="HideHotSpot(evt,'7')" onmousemove="ShowToolTip(evt,'7',&quot;Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CQMG0033.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M284.48,127.18L265.56,127.18L265.56,108.26L284.48,108.26zM713.21,128.21L293.32,128.21L293.32,96.95L713.21,96.95zM267.04,110.71L266.69,109.39L267.87,109.19zM268.01,125.70L266.69,126.05L267.04,124.73z"/></a></g><g id="hotspot.8" ident="" onmouseover="ShowHotSpot(evt,'8')" onmouseout="HideHotSpot(evt,'8')" onmousemove="ShowToolTip(evt,'8',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0062.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M528.23,195.56L528.15,226.91L296.73,226.58L296.73,194.94L527.20,194.53zM271.16,223.25L269.65,223.42L269.31,225.16L268.61,224.82L268.64,206.96L287.57,206.96L287.57,225.88L269.64,225.85L269.31,225.16L272.28,224.37zM272.28,224.37L269.31,225.16L269.65,223.42L271.16,223.25zM286.44,224.75L285.11,224.40L286.63,223.57z"/></a></g><g id="hotspot.9" ident="" onmouseover="ShowHotSpot(evt,'9')" onmouseout="HideHotSpot(evt,'9')" onmousemove="ShowToolTip(evt,'9',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0073.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M290.65,383.18L271.73,383.18L271.73,364.26L290.65,364.26zM543.57,384.21L299.49,384.21L299.49,352.95L543.57,352.95zM273.21,366.71L272.86,365.39L274.04,365.19zM274.18,381.70L272.86,382.05L273.21,380.73z"/></a></g><g id="hotspot.10" ident="" onmouseover="ShowHotSpot(evt,'10')" onmouseout="HideHotSpot(evt,'10')" onmousemove="ShowToolTip(evt,'10',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0064.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M269.27,238.54L269.62,237.84L287.57,237.80L287.57,256.73L268.64,256.73L268.59,238.87L269.27,238.54L269.63,240.24L271.91,240.04L273.18,238.81zM296.73,226.82L540.49,226.49L540.49,258.78L296.73,258.46zM284.15,238.70L286.51,238.96L286.77,240.09L285.39,240.08zM271.91,240.04L269.63,240.24L269.27,238.54L273.18,238.81z"/></a></g><g id="hotspot.11" ident="" onmouseover="ShowHotSpot(evt,'11')" onmouseout="HideHotSpot(evt,'11')" onmousemove="ShowToolTip(evt,'11',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="DQKJ0021.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M284.48,161.11L265.56,161.11L265.56,142.18L284.48,142.18zM711.85,161.81L293.32,162.14L293.32,130.88L712.18,130.88zM267.04,144.64L266.69,143.32L267.87,143.12zM268.01,159.63L266.69,159.98L267.04,158.65z"/></a></g><g id="hotspot.12" ident="" onmouseover="ShowHotSpot(evt,'12')" onmouseout="HideHotSpot(evt,'12')" onmousemove="ShowToolTip(evt,'12',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0069.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M270.37,268.31L270.69,267.61L288.60,267.61L288.60,286.54L269.67,286.54L269.66,268.63L270.37,268.31L270.79,270.11L272.17,270.11L272.16,268.73zM570.30,287.57L297.43,287.57L297.43,256.31L570.30,256.31zM286.28,268.55L287.46,268.75L287.66,269.93L286.49,269.72zM272.17,270.11L270.79,270.11L270.37,268.31L272.16,268.73z"/></a></g><g id="hotspot.13" ident="" onmouseover="ShowHotSpot(evt,'13')" onmouseout="HideHotSpot(evt,'13')" onmousemove="ShowToolTip(evt,'13',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0057.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M269.16,190.46L268.35,192.25L267.63,191.93L267.61,174.06L286.54,174.06L286.54,192.98L268.66,192.96L268.35,192.25L270.14,191.43zM623.76,194.01L295.37,194.01L295.37,162.75L623.76,162.75zM269.10,176.51L268.75,175.19L269.93,174.99zM270.14,191.43L268.35,192.25L269.16,190.46z"/></a></g><g id="hotspot.14" ident="" onmouseover="ShowHotSpot(evt,'14')" onmouseout="HideHotSpot(evt,'14')" onmousemove="ShowToolTip(evt,'14',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0085.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M292.71,575.44L273.78,575.44L273.78,556.52L292.71,556.52zM874.62,576.47L301.54,576.47L301.54,545.21L874.62,545.21zM275.27,558.97L274.92,557.65L276.10,557.45zM276.24,573.96L274.92,574.31L275.27,572.99z"/></a></g><g id="hotspot.15" ident="" onmouseover="ShowHotSpot(evt,'15')" onmouseout="HideHotSpot(evt,'15')" onmousemove="ShowToolTip(evt,'15',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0087.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M277.33,638.61L275.82,638.77L275.48,640.52L274.78,640.18L274.81,622.32L293.74,622.32L293.74,641.24L275.81,641.21L275.48,640.52L278.45,639.73zM302.57,611.01L866.40,611.01L866.40,642.27L302.90,641.94zM278.45,639.73L275.48,640.52L275.82,638.77L277.33,638.61zM292.60,640.11L291.28,639.76L292.80,638.93z"/></a></g><g id="hotspot.16" ident="" onmouseover="ShowHotSpot(evt,'16')" onmouseout="HideHotSpot(evt,'16')" onmousemove="ShowToolTip(evt,'16',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0084.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M289.63,544.60L270.70,544.60L270.70,525.67L289.63,525.67zM779.01,545.63L298.46,545.63L298.46,514.36L779.01,514.36zM272.18,528.13L271.83,526.81L273.01,526.61zM273.15,543.12L271.83,543.46L272.18,542.14z"/></a></g><g id="hotspot.17" ident="" onmouseover="ShowHotSpot(evt,'17')" onmouseout="HideHotSpot(evt,'17')" onmousemove="ShowToolTip(evt,'17',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0086.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M292.71,608.34L273.78,608.34L273.78,589.42L292.71,589.42zM772.84,609.37L301.54,609.37L301.54,578.11L772.84,578.11zM276.24,606.86L274.92,607.21L275.27,605.89z"/></a></g><g id="hotspot.18" ident="" onmouseover="ShowHotSpot(evt,'18')" onmouseout="HideHotSpot(evt,'18')" onmousemove="ShowToolTip(evt,'18',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="EEDH0690.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M276.57,687.82L276.89,687.11L294.77,687.09L294.77,706.01L275.84,706.01L275.86,688.13L276.57,687.82L277.39,689.61L278.20,688.07zM454.12,707.04L303.60,707.04L303.60,675.78L454.12,675.78zM292.45,688.02L293.63,688.22L293.83,689.40L292.66,689.19zM277.39,689.61L276.57,687.82L278.20,688.07z"/></a></g><g id="hotspot.19" ident="" onmouseover="ShowHotSpot(evt,'19')" onmouseout="HideHotSpot(evt,'19')" onmousemove="ShowToolTip(evt,'19',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="EEDH0931.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M294.77,738.91L275.84,738.91L275.84,719.99L294.77,719.99zM553.85,739.94L303.60,739.94L303.60,708.68L553.85,708.68zM277.32,722.44L276.97,721.12L278.15,720.92zM278.30,737.43L276.97,737.78L277.32,736.46z"/></a></g><g id="hotspot.20" ident="" onmouseover="ShowHotSpot(evt,'20')" onmouseout="HideHotSpot(evt,'20')" onmousemove="ShowToolTip(evt,'20',&quot;Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Copy 1 of Etichetta Ripetizi...&quot;)" opacity="0"><a xlink:href="CWAG0077.svg"><path style="fill:#00ff00;fill-rule:evenodd" d="M290.65,511.70L271.73,511.70L271.73,492.77L290.65,492.77zM775.92,512.73L299.49,512.73L299.49,481.46L775.92,481.46zM273.21,495.23L272.86,493.91L274.04,493.71zM274.18,510.22L272.86,510.56L273.21,509.24z"/></a></g><g id="ToolTip" visibility="hidden" opacity="0" transform="translate(0,0)"><rect id="ToolTipShadow" opacity="0.20" fill="black" stroke="none" x="0" y="0" width="30" height="8"/><rect id="ToolTipBG" fill="#ffffe1" stroke="black" x="0" y="0" width="30" height="8"/><text xml:space="preserve" id="ToolTipText" fill="black" x="0" y="0" width="30" height="8">tooltip</text></g></g></svg>
